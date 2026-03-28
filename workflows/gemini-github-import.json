@@ -1,0 +1,91 @@
+{
+  "id": "gemini-github-import",
+  "name": "Gemini → Journal インポート",
+  "icon": "riFlowChart",
+  "folderId": null,
+  "content": null,
+  "connectedTable": null,
+  "drawflow": {
+    "edges": [
+      {
+        "id": "edge-1",
+        "source": "node-trigger",
+        "target": "node-scrape",
+        "sourceHandle": "output-1",
+        "targetHandle": "input-1"
+      },
+      {
+        "id": "edge-2",
+        "source": "node-scrape",
+        "target": "node-github",
+        "sourceHandle": "output-1",
+        "targetHandle": "input-1"
+      }
+    ],
+    "zoom": 1,
+    "nodes": [
+      {
+        "id": "node-trigger",
+        "label": "trigger",
+        "data": {
+          "disableBlock": false,
+          "description": "Gemini のページを開いた状態で実行してください",
+          "type": "manual",
+          "interval": 0,
+          "date": "",
+          "time": "",
+          "shortcut": ""
+        },
+        "type": "BlockBasic",
+        "position": { "x": 0, "y": 0 }
+      },
+      {
+        "id": "node-scrape",
+        "label": "javascript-code",
+        "data": {
+          "disableBlock": false,
+          "description": "Gemini の会話タイトルと全メッセージをスクレイプ",
+          "everyNewTab": false,
+          "timeout": 30000,
+          "preloadScripts": [],
+          "code": "// --- タイトルの取得 ---\nconst rawTitle = document.title || '';\nconst title = rawTitle.replace(/\\s*[-–]\\s*Gemini\\s*$/i, '').trim() || '無題の会話';\n\n// --- 会話内容の取得 ---\nconst userEls = document.querySelectorAll(\n  '.query-text, .user-query-text, [data-message-author-role=\"user\"] .whitespace-pre-wrap'\n);\nconst modelEls = document.querySelectorAll(\n  'model-response .markdown, .model-response-text, [data-message-author-role=\"model\"] .markdown'\n);\n\nconst userTexts  = Array.from(userEls).map(el => el.innerText.trim()).filter(Boolean);\nconst modelTexts = Array.from(modelEls).map(el => el.innerText.trim()).filter(Boolean);\n\nconst lines = [];\nconst len = Math.max(userTexts.length, modelTexts.length);\nfor (let i = 0; i < len; i++) {\n  if (userTexts[i])  lines.push('**ユーザー:**\\n\\n' + userTexts[i]);\n  if (modelTexts[i]) lines.push('**Gemini:**\\n\\n' + modelTexts[i]);\n}\n\nconst content = lines.length > 0\n  ? lines.join('\\n\\n---\\n\\n')\n  : document.body.innerText.slice(0, 8000);\n\nautomaSetVariable('title',   title);\nautomaSetVariable('content', content);\nautomaNextBlock({ data: '' });"
+        },
+        "type": "BlockBasic",
+        "position": { "x": 320, "y": 0 }
+      },
+      {
+        "id": "node-github",
+        "label": "javascript-code",
+        "data": {
+          "disableBlock": false,
+          "description": "GitHub API でブランチ・ファイル作成 → PR オープン",
+          "everyNewTab": false,
+          "timeout": 60000,
+          "preloadScripts": [],
+          "code": "// --- 設定を globalData から読み込む ---\nconst cfg   = JSON.parse(automaRefData('globalData') || '{}');\nconst token = cfg.github_token;\nconst owner = cfg.github_owner || 'kotaoue';\nconst repo  = cfg.github_repo  || 'Journal';\nconst base  = cfg.base_branch  || 'main';\n\nif (!token) throw new Error('globalData に github_token が設定されていません。');\n\nconst title   = automaRefData('variables', 'title');\nconst content = automaRefData('variables', 'content');\n\nconst api = (path, opts) => fetch(`https://api.github.com/repos/${owner}/${repo}/${path}`, {\n  ...opts,\n  headers: {\n    'Authorization':        `Bearer ${token}`,\n    'Accept':               'application/vnd.github+json',\n    'X-GitHub-Api-Version': '2022-11-28',\n    'Content-Type':         'application/json',\n    ...opts?.headers\n  }\n}).then(async r => { const j = await r.json(); if (!r.ok) throw new Error(JSON.stringify(j)); return j; });\n\n// --- スラッグ生成 ---\nconst slug = title\n  .toLowerCase()\n  .replace(/[^a-z0-9\\u3041-\\u3096\\u30a1-\\u30f6\\u4e00-\\u9faf]/g, '-')\n  .replace(/-+/g, '-')\n  .replace(/^-|-$/g, '') || 'untitled';\n\n// --- 日付・パス ---\nconst today = new Date().toISOString().slice(0, 10);\nconst year  = today.slice(0, 4);\nconst branch = `gemini/${today}-${slug}`;\nconst path   = `tech/${year}/gemini-thread-import/${slug}.md`;\n\nconst fileBody = `# ${title}\\n\\n> インポート日: ${today}  \\n> ソース: https://gemini.google.com/app?hl=ja\\n\\n---\\n\\n${content}\\n`;\nconst encoded  = btoa(unescape(encodeURIComponent(fileBody)));\n\n// 1. デフォルトブランチの最新 SHA を取得\nconst branchInfo = await api(`branches/${base}`);\nconst sha = branchInfo.commit.sha;\n\n// 2. 新しいブランチを作成\nawait api('git/refs', {\n  method: 'POST',\n  body: JSON.stringify({ ref: `refs/heads/${branch}`, sha })\n});\n\n// 3. ファイルを作成\nawait api(`contents/${path}`, {\n  method: 'PUT',\n  body: JSON.stringify({\n    message: `feat(gemini): ${title}`,\n    content: encoded,\n    branch\n  })\n});\n\n// 4. PR を作成\nconst pr = await api('pulls', {\n  method: 'POST',\n  body: JSON.stringify({\n    title: `feat(gemini): ${title}`,\n    body:  `Gemini との会話「${title}」を \\`${path}\\` としてインポートしました。`,\n    head:  branch,\n    base\n  })\n});\n\nautomaNextBlock({ data: `PR opened: ${pr.html_url}` });"
+        },
+        "type": "BlockBasic",
+        "position": { "x": 640, "y": 0 }
+      }
+    ]
+  },
+  "table": [],
+  "dataColumns": [],
+  "description": "現在開いている Gemini の会話をスクレイプし、GitHub API 経由で Journal リポジトリにブランチ・ファイル作成・PR オープンまで自動で行います。\n\n【事前設定】\nワークフローの「globalData」に以下の JSON を入力してください:\n{\n  \"github_token\": \"ghp_YOUR_PERSONAL_ACCESS_TOKEN\",\n  \"github_owner\": \"kotaoue\",\n  \"github_repo\":  \"Journal\",\n  \"base_branch\":  \"main\"\n}\n\nトークンには repo スコープ（contents + pull-requests の読み書き）が必要です。",
+  "trigger": null,
+  "createdAt": 1743166029000,
+  "updatedAt": 1743167503000,
+  "isDisabled": false,
+  "settings": {
+    "blockDelay": 500,
+    "saveLog": true,
+    "debugMode": false,
+    "onError": "stop-workflow",
+    "executedBlockOnWeb": true,
+    "inputAutofill": false,
+    "insertDefaultColumn": false,
+    "defaultColumnName": "column"
+  },
+  "globalData": "{\n  \"github_token\": \"ghp_YOUR_PERSONAL_ACCESS_TOKEN\",\n  \"github_owner\": \"kotaoue\",\n  \"github_repo\":  \"Journal\",\n  \"base_branch\":  \"main\"\n}",
+  "version": "1.21.x"
+}
