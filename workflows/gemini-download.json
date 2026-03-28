@@ -1,0 +1,91 @@
+{
+  "id": "gemini-download",
+  "name": "Gemini → Markdown Download",
+  "icon": "riFlowChart",
+  "folderId": null,
+  "content": null,
+  "connectedTable": null,
+  "drawflow": {
+    "edges": [
+      {
+        "id": "edge-1",
+        "source": "node-trigger",
+        "target": "node-scrape",
+        "sourceHandle": "output-1",
+        "targetHandle": "input-1"
+      },
+      {
+        "id": "edge-2",
+        "source": "node-scrape",
+        "target": "node-download",
+        "sourceHandle": "output-1",
+        "targetHandle": "input-1"
+      }
+    ],
+    "zoom": 1,
+    "nodes": [
+      {
+        "id": "node-trigger",
+        "label": "trigger",
+        "data": {
+          "disableBlock": false,
+          "description": "Run while the Gemini conversation page is open",
+          "type": "manual",
+          "interval": 0,
+          "date": "",
+          "time": "",
+          "shortcut": ""
+        },
+        "type": "BlockBasic",
+        "position": { "x": 0, "y": 0 }
+      },
+      {
+        "id": "node-scrape",
+        "label": "javascript-code",
+        "data": {
+          "disableBlock": false,
+          "description": "Scrape the Gemini conversation title and all messages",
+          "everyNewTab": false,
+          "timeout": 30000,
+          "preloadScripts": [],
+          "code": "// --- Title ---\nconst rawTitle = document.title || '';\nconst title = rawTitle.replace(/\\s*[-–]\\s*Gemini\\s*$/i, '').trim() || 'untitled';\n\n// --- Messages ---\nconst userEls = document.querySelectorAll(\n  '.query-text, .user-query-text, [data-message-author-role=\"user\"] .whitespace-pre-wrap'\n);\nconst modelEls = document.querySelectorAll(\n  'model-response .markdown, .model-response-text, [data-message-author-role=\"model\"] .markdown'\n);\n\nconst userTexts  = Array.from(userEls).map(el => el.innerText.trim()).filter(Boolean);\nconst modelTexts = Array.from(modelEls).map(el => el.innerText.trim()).filter(Boolean);\n\nconst lines = [];\nconst len = Math.max(userTexts.length, modelTexts.length);\nfor (let i = 0; i < len; i++) {\n  if (userTexts[i])  lines.push('**User:**\\n\\n' + userTexts[i]);\n  if (modelTexts[i]) lines.push('**Gemini:**\\n\\n' + modelTexts[i]);\n}\n\nconst content = lines.length > 0\n  ? lines.join('\\n\\n---\\n\\n')\n  : document.body.innerText.slice(0, 8000);\n\nautomaSetVariable('title',   title);\nautomaSetVariable('content', content);\nautomaNextBlock({ data: '' });"
+        },
+        "type": "BlockBasic",
+        "position": { "x": 320, "y": 0 }
+      },
+      {
+        "id": "node-download",
+        "label": "javascript-code",
+        "data": {
+          "disableBlock": false,
+          "description": "Save the conversation as a Markdown file to the PC",
+          "everyNewTab": false,
+          "timeout": 10000,
+          "preloadScripts": [],
+          "code": "const title   = automaRefData('variables', 'title');\nconst content = automaRefData('variables', 'content');\n\nconst today    = new Date().toISOString().slice(0, 10);\nconst markdown = `# ${title}\\n\\n> Downloaded: ${today}  \\n> Source: ${location.href}\\n\\n---\\n\\n${content}\\n`;\n\nconst filename = (title\n  .replace(/[^a-z0-9]/gi, '_')\n  .replace(/_+/g, '_')\n  .replace(/^_|_$/g, '')\n  .toLowerCase() || 'gemini') + '.md';\n\nconst blob = new Blob([markdown], { type: 'text/markdown' });\nconst url  = URL.createObjectURL(blob);\nconst a    = document.createElement('a');\na.href     = url;\na.download = filename;\ndocument.body.appendChild(a);\na.click();\nsetTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 1000);\n\nautomaNextBlock({ data: `Saved as ${filename}` });"
+        },
+        "type": "BlockBasic",
+        "position": { "x": 640, "y": 0 }
+      }
+    ]
+  },
+  "table": [],
+  "dataColumns": [],
+  "description": "Scrapes the currently open Gemini conversation and saves it as a Markdown file to your PC.",
+  "trigger": null,
+  "createdAt": 1743166029000,
+  "updatedAt": 1743170000000,
+  "isDisabled": false,
+  "settings": {
+    "blockDelay": 500,
+    "saveLog": true,
+    "debugMode": false,
+    "onError": "stop-workflow",
+    "executedBlockOnWeb": true,
+    "inputAutofill": false,
+    "insertDefaultColumn": false,
+    "defaultColumnName": "column"
+  },
+  "globalData": "{}",
+  "version": "1.21.x"
+}
