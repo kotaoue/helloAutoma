@@ -1,18 +1,18 @@
-# ワークフロー一覧
+# Workflows
 
-## [Gemini → Journal インポート](gemini-github-import.json)
+## [Gemini → Journal Import](gemini-github-import.json)
 
-現在開いている Gemini の会話をスクレイプし、GitHub API 経由で Journal リポジトリにブランチ・ファイル作成・PR オープンまで自動で行います。
+Scrapes the currently open Gemini conversation and automatically creates a branch, commits a Markdown file, and opens a PR in the Journal repository via the GitHub API.
 
-### 処理の流れ
+### How it works
 
-1. **トリガー** — 手動実行（Gemini のページを開いた状態で起動）
-2. **スクレイプ** — ページタイトルとユーザー／Gemini の発言を取得し、Markdown 形式に整形して変数へ保存
-3. **GitHub 連携** — GitHub API でブランチ作成・ファイルコミット・PR オープンを実行
+1. **Trigger** — Manual execution (run while the Gemini page is open)
+2. **Scrape** — Extracts the page title and user/Gemini messages, formats them as Markdown, and stores them as workflow variables
+3. **GitHub** — Creates a branch, commits the file, and opens a PR via the GitHub API
 
-### 事前設定
+### Setup
 
-ワークフローの **globalData** に以下の JSON を入力してください:
+Enter the following JSON into the workflow's **globalData**:
 
 ```json
 {
@@ -23,11 +23,12 @@
 }
 ```
 
-> **注意:** トークンには `repo` スコープ（contents + pull-requests の読み書き）が必要です。トークンをソースコードにコミットしないでください。
+> **Note:** The token requires the `repo` scope (read/write for contents and pull-requests). Do not commit your token to source code.
 
-### インポート方法
+### Import steps
 
-1. [Automa](https://chromewebstore.google.com/detail/automa/infppggnoaenmfagbfknfkancpbljcca) をインストールする
-2. `gemini-github-import.json` の内容をコピーし、Automa の「Import workflow」からインポートする
-3. ワークフローの globalData に上記 JSON（`github_token` を実際のトークンに書き換えたもの）を設定する
-4. [Gemini](https://gemini.google.com/) でダウンロードしたい会話を開き、ワークフローを手動実行する
+1. Install [Automa](https://chromewebstore.google.com/detail/automa/infppggnoaenmfagbfknfkancpbljcca)
+2. Copy the contents of `gemini-github-import.json` and import it via Automa's "Import workflow"
+3. Set the globalData above in the workflow (replace `github_token` with your actual token)
+4. Open the Gemini conversation you want to save and run the workflow manually
+
