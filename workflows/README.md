@@ -1,19 +1,33 @@
-# Workflows
+# ワークフロー一覧
 
-## hello-world
+## [Gemini → Journal インポート](gemini-github-import.json)
 
-A minimal Hello World workflow to help you understand the basics of Automa.
+現在開いている Gemini の会話をスクレイプし、GitHub API 経由で Journal リポジトリにブランチ・ファイル作成・PR オープンまで自動で行います。
 
-See [`hello-world/README.md`](hello-world/README.md) for details.
+### 処理の流れ
 
-## github-download
+1. **トリガー** — 手動実行（Gemini のページを開いた状態で起動）
+2. **スクレイプ** — ページタイトルとユーザー／Gemini の発言を取得し、Markdown 形式に整形して変数へ保存
+3. **GitHub 連携** — GitHub API でブランチ作成・ファイルコミット・PR オープンを実行
 
-Right-click a GitHub file page → "Download JSON for Automa" to download the workflow JSON file. This workflow only downloads the JSON; add it to Automa manually from the dashboard.
+### 事前設定
 
-See [`github-download/README.md`](github-download/README.md) for details.
+ワークフローの **globalData** に以下の JSON を入力してください:
 
-## youtube-playlist-to-markdown
+```json
+{
+  "github_token": "ghp_YOUR_PERSONAL_ACCESS_TOKEN",
+  "github_owner": "kotaoue",
+  "github_repo":  "Journal",
+  "base_branch":  "main"
+}
+```
 
-Export all videos in a YouTube playlist page as a Markdown list and download it as `<playlist name>.md`.
+> **注意:** トークンには `repo` スコープ（contents + pull-requests の読み書き）が必要です。トークンをソースコードにコミットしないでください。
 
-See [`youtube-playlist-to-markdown/README.md`](youtube-playlist-to-markdown/README.md) for details.
+### インポート方法
+
+1. [Automa](https://chromewebstore.google.com/detail/automa/infppggnoaenmfagbfknfkancpbljcca) をインストールする
+2. `gemini-github-import.json` の内容をコピーし、Automa の「Import workflow」からインポートする
+3. ワークフローの globalData に上記 JSON（`github_token` を実際のトークンに書き換えたもの）を設定する
+4. [Gemini](https://gemini.google.com/) でダウンロードしたい会話を開き、ワークフローを手動実行する
