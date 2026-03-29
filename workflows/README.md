@@ -12,7 +12,6 @@ Scrapes the currently open Gemini conversation and saves it as a Markdown file t
 
 ### Import steps
 
-1. Install [Automa](https://chromewebstore.google.com/detail/automa/infppggnoaenmfagbfknfkancpbljcca)
-2. Copy the contents of `gemini-download.json` and import it via Automa's "Import workflow"
-3. Open the Gemini conversation you want to save and run the workflow manually
+1. Copy the contents of `gemini-download.json` and import it via Automa's "Import workflow"
+2. Open the Gemini conversation you want to save and run the workflow manually
 
