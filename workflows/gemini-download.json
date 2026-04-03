@@ -8,15 +8,8 @@
   "drawflow": {
     "edges": [
       {
-        "id": "edge-0",
-        "source": "node-trigger",
-        "target": "node-notify-start",
-        "sourceHandle": "output-1",
-        "targetHandle": "input-1"
-      },
-      {
         "id": "edge-1",
-        "source": "node-notify-start",
+        "source": "node-trigger",
         "target": "node-scrape",
         "sourceHandle": "output-1",
         "targetHandle": "input-1"
@@ -24,21 +17,7 @@
       {
         "id": "edge-2",
         "source": "node-scrape",
-        "target": "node-notify-scraped",
-        "sourceHandle": "output-1",
-        "targetHandle": "input-1"
-      },
-      {
-        "id": "edge-3",
-        "source": "node-notify-scraped",
         "target": "node-download",
-        "sourceHandle": "output-1",
-        "targetHandle": "input-1"
-      },
-      {
-        "id": "edge-4",
-        "source": "node-download",
-        "target": "node-notify-done",
         "sourceHandle": "output-1",
         "targetHandle": "input-1"
       }
@@ -64,51 +43,19 @@
         }
       },
       {
-        "id": "node-notify-start",
-        "label": "notification",
-        "data": {
-          "disableBlock": false,
-          "description": "Debug: workflow started",
-          "title": "Gemini Download",
-          "message": "Starting — scraping conversation...",
-          "iconUrl": ""
-        },
-        "type": "BlockBasic",
-        "position": {
-          "x": 240,
-          "y": 0
-        }
-      },
-      {
         "id": "node-scrape",
         "label": "javascript-code",
         "data": {
           "disableBlock": false,
-          "description": "Scrape the Gemini conversation title and messages",
+          "description": "Scrape: shows alert, logs diagnostics, extracts messages",
           "everyNewTab": false,
           "timeout": 30000,
           "preloadScripts": [],
-          "code": "try {\n  const rawTitle = document.title || '';\n  const title = rawTitle.replace(/\\s*[-\\u2013]\\s*Gemini\\s*$/i, '').trim() || 'Gemini Chat';\n\n  let pairs = [];\n\n  // Strategy 1: <user-query> and <model-response> custom elements (Gemini 2024+)\n  const userQueryEls = document.querySelectorAll('user-query');\n  const modelRespEls = document.querySelectorAll('model-response');\n  if (userQueryEls.length > 0 || modelRespEls.length > 0) {\n    const max = Math.max(userQueryEls.length, modelRespEls.length);\n    for (let i = 0; i < max; i++) {\n      if (userQueryEls[i]) pairs.push({ role: 'User',   text: userQueryEls[i].innerText.trim() });\n      if (modelRespEls[i]) pairs.push({ role: 'Gemini', text: modelRespEls[i].innerText.trim() });\n    }\n  }\n\n  // Strategy 2: data-message-author-role attribute\n  if (pairs.length === 0) {\n    const msgEls = document.querySelectorAll('[data-message-author-role]');\n    for (const el of msgEls) {\n      const role = el.getAttribute('data-message-author-role') === 'user' ? 'User' : 'Gemini';\n      pairs.push({ role, text: el.innerText.trim() });\n    }\n  }\n\n  // Strategy 3: class-based fallback\n  if (pairs.length === 0) {\n    const userEls  = document.querySelectorAll('.query-text, .user-query-text');\n    const modelEls = document.querySelectorAll('.model-response-text, .response-content');\n    const max = Math.max(userEls.length, modelEls.length);\n    for (let i = 0; i < max; i++) {\n      if (userEls[i])  pairs.push({ role: 'User',   text: userEls[i].innerText.trim() });\n      if (modelEls[i]) pairs.push({ role: 'Gemini', text: modelEls[i].innerText.trim() });\n    }\n  }\n\n  const validPairs = pairs.filter(p => p.text);\n  const lines = validPairs.map(p => `**${p.role}:**\\n\\n${p.text}`);\n\n  const content = lines.length > 0\n    ? lines.join('\\n\\n---\\n\\n')\n    : '<!-- No conversation messages found. Open a Gemini conversation first (URL: gemini.google.com/app/XXXXXX). -->';\n\n  console.log('[Gemini Download] title:', title, '| messages:', validPairs.length);\n  automaSetVariable('title',    title);\n  automaSetVariable('content',  content);\n  automaSetVariable('msgCount', String(validPairs.length));\n  automaNextBlock({ data: 'scraped ' + validPairs.length + ' messages from: ' + title });\n} catch (err) {\n  console.error('[Gemini Download] Scrape error:', err.message);\n  automaSetVariable('title',    'gemini-error');\n  automaSetVariable('content',  'Error during scrape: ' + err.message);\n  automaSetVariable('msgCount', '0');\n  automaNextBlock({ data: 'scrape error: ' + err.message });\n}"
+          "code": "function safeNext(data) {\n  if (typeof automaNextBlock === 'function') {\n    automaNextBlock(data);\n  } else {\n    // automaNextBlock not yet available; poll every 200ms up to 5s\n    var attempts = 0;\n    var timer = setInterval(function() {\n      attempts++;\n      if (typeof automaNextBlock === 'function') {\n        clearInterval(timer);\n        automaNextBlock(data);\n      } else if (attempts >= 25) {\n        clearInterval(timer); // give up — block will time out\n        console.error('[Gemini Download] automaNextBlock never became available');\n      }\n    }, 200);\n  }\n}\n\n// Signal that this code is running (shows in browser console AND as an alert)\nalert('[Gemini Download] Scrape block started.\\nURL: ' + location.href + '\\nautomaNextBlock available: ' + (typeof automaNextBlock === 'function'));\n\ntry {\n  var rawTitle = document.title || '';\n  var title = rawTitle.replace(/\\s*[-\\u2013]\\s*Gemini\\s*$/i, '').trim() || 'Gemini Chat';\n\n  var pairs = [];\n\n  // Strategy 1: <user-query> / <model-response> custom elements (Gemini 2024+)\n  var userQueryEls = document.querySelectorAll('user-query');\n  var modelRespEls = document.querySelectorAll('model-response');\n  if (userQueryEls.length > 0 || modelRespEls.length > 0) {\n    var max1 = Math.max(userQueryEls.length, modelRespEls.length);\n    for (var i = 0; i < max1; i++) {\n      if (userQueryEls[i]) pairs.push({ role: 'User',   text: userQueryEls[i].innerText.trim() });\n      if (modelRespEls[i]) pairs.push({ role: 'Gemini', text: modelRespEls[i].innerText.trim() });\n    }\n  }\n\n  // Strategy 2: data-message-author-role attribute\n  if (pairs.length === 0) {\n    var msgEls = document.querySelectorAll('[data-message-author-role]');\n    for (var j = 0; j < msgEls.length; j++) {\n      var el = msgEls[j];\n      var role = el.getAttribute('data-message-author-role') === 'user' ? 'User' : 'Gemini';\n      pairs.push({ role: role, text: el.innerText.trim() });\n    }\n  }\n\n  // Strategy 3: class-based fallback\n  if (pairs.length === 0) {\n    var userEls  = document.querySelectorAll('.query-text, .user-query-text');\n    var modelEls = document.querySelectorAll('.model-response-text, .response-content');\n    var max3 = Math.max(userEls.length, modelEls.length);\n    for (var k = 0; k < max3; k++) {\n      if (userEls[k])  pairs.push({ role: 'User',   text: userEls[k].innerText.trim() });\n      if (modelEls[k]) pairs.push({ role: 'Gemini', text: modelEls[k].innerText.trim() });\n    }\n  }\n\n  var validPairs = pairs.filter(function(p) { return p.text; });\n  var lines = validPairs.map(function(p) { return '**' + p.role + ':**\\n\\n' + p.text; });\n\n  var content = lines.length > 0\n    ? lines.join('\\n\\n---\\n\\n')\n    : '<!-- No conversation messages found. Run this on a conversation page (URL ends with /app/XXXXXX). -->';\n\n  console.log('[Gemini Download] title:', title, '| messages found:', validPairs.length);\n\n  if (typeof automaSetVariable === 'function') {\n    automaSetVariable('title',    title);\n    automaSetVariable('content',  content);\n    automaSetVariable('msgCount', String(validPairs.length));\n  }\n\n  safeNext({ data: 'scraped ' + validPairs.length + ' messages from: ' + title });\n\n} catch (err) {\n  console.error('[Gemini Download] Scrape error:', err);\n  if (typeof automaSetVariable === 'function') {\n    automaSetVariable('title',   'gemini-error');\n    automaSetVariable('content', 'Scrape error: ' + err.message);\n    automaSetVariable('msgCount', '0');\n  }\n  safeNext({ data: 'scrape error: ' + err.message });\n}"
         },
         "type": "BlockBasic",
         "position": {
-          "x": 480,
-          "y": 0
-        }
-      },
-      {
-        "id": "node-notify-scraped",
-        "label": "notification",
-        "data": {
-          "disableBlock": false,
-          "description": "Debug: scrape complete",
-          "title": "Gemini Download",
-          "message": "Scraped {{variables.msgCount}} messages from “{{variables.title}}”",
-          "iconUrl": ""
-        },
-        "type": "BlockBasic",
-        "position": {
-          "x": 720,
+          "x": 320,
           "y": 0
         }
       },
@@ -117,31 +64,15 @@
         "label": "javascript-code",
         "data": {
           "disableBlock": false,
-          "description": "Save the conversation as a Markdown file to the PC",
+          "description": "Download: saves Markdown file to PC",
           "everyNewTab": false,
-          "timeout": 10000,
+          "timeout": 15000,
           "preloadScripts": [],
-          "code": "try {\n  const title   = automaRefData('variables', 'title')   || 'gemini';\n  const content = automaRefData('variables', 'content') || '';\n\n  const today    = new Date().toISOString().slice(0, 10);\n  const markdown = `# ${title}\\n\\n> Downloaded: ${today}  \\n> Source: ${location.href}\\n\\n---\\n\\n${content}\\n`;\n\n  const filename = (title\n    .replace(/[^a-z0-9]/gi, '_')\n    .replace(/_+/g, '_')\n    .replace(/^_|_$/g, '')\n    .toLowerCase() || 'gemini') + '.md';\n\n  const blob = new Blob([markdown], { type: 'text/markdown' });\n  const url  = URL.createObjectURL(blob);\n  const a    = document.createElement('a');\n  a.href     = url;\n  a.download = filename;\n  document.body.appendChild(a);\n  a.click();\n  setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 1000);\n\n  console.log('[Gemini Download] File saved as:', filename);\n  automaSetVariable('filename', filename);\n  automaNextBlock({ data: 'saved: ' + filename });\n} catch (err) {\n  console.error('[Gemini Download] Download error:', err.message);\n  automaNextBlock({ data: 'download error: ' + err.message });\n}"
+          "code": "function safeNext(data) {\n  if (typeof automaNextBlock === 'function') {\n    automaNextBlock(data);\n  } else {\n    // automaNextBlock not yet available; poll every 200ms up to 5s\n    var attempts = 0;\n    var timer = setInterval(function() {\n      attempts++;\n      if (typeof automaNextBlock === 'function') {\n        clearInterval(timer);\n        automaNextBlock(data);\n      } else if (attempts >= 25) {\n        clearInterval(timer); // give up — block will time out\n        console.error('[Gemini Download] automaNextBlock never became available');\n      }\n    }, 200);\n  }\n}\n\ntry {\n  var title   = (typeof automaRefData === 'function' ? automaRefData('variables', 'title')   : null) || 'gemini';\n  var content = (typeof automaRefData === 'function' ? automaRefData('variables', 'content') : null) || '';\n\n  var today    = new Date().toISOString().slice(0, 10);\n  var markdown = '# ' + title + '\\n\\n'\n    + '> Downloaded: ' + today + '  \\n'\n    + '> Source: ' + location.href + '\\n\\n'\n    + '---\\n\\n'\n    + content + '\\n';\n\n  var filename = (title\n    .replace(/[^a-z0-9]/gi, '_')\n    .replace(/_+/g, '_')\n    .replace(/^_|_$/g, '')\n    .toLowerCase() || 'gemini') + '.md';\n\n  var blob = new Blob([markdown], { type: 'text/markdown' });\n  var url  = URL.createObjectURL(blob);\n  var a    = document.createElement('a');\n  a.href     = url;\n  a.download = filename;\n  document.body.appendChild(a);\n  a.click();\n  setTimeout(function() { URL.revokeObjectURL(url); if (a.parentNode) a.parentNode.removeChild(a); }, 1000);\n\n  console.log('[Gemini Download] File saved as:', filename);\n  if (typeof automaSetVariable === 'function') {\n    automaSetVariable('filename', filename);\n  }\n  safeNext({ data: 'saved: ' + filename });\n\n} catch (err) {\n  console.error('[Gemini Download] Download error:', err);\n  safeNext({ data: 'download error: ' + err.message });\n}"
         },
         "type": "BlockBasic",
         "position": {
-          "x": 960,
-          "y": 0
-        }
-      },
-      {
-        "id": "node-notify-done",
-        "label": "notification",
-        "data": {
-          "disableBlock": false,
-          "description": "Debug: download complete",
-          "title": "Gemini Download",
-          "message": "Done! Saved “{{variables.filename}}” to your Downloads folder.",
-          "iconUrl": ""
-        },
-        "type": "BlockBasic",
-        "position": {
-          "x": 1200,
+          "x": 640,
           "y": 0
         }
       }
