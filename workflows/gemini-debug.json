@@ -1,0 +1,76 @@
+{
+  "id": "gemini-debug",
+  "name": "Gemini Download — Debug",
+  "icon": "riFlowChart",
+  "folderId": null,
+  "content": null,
+  "connectedTable": null,
+  "drawflow": {
+    "edges": [
+      {
+        "id": "edge-1",
+        "source": "trigger",
+        "target": "js-debug",
+        "sourceHandle": "output-1",
+        "targetHandle": "input-1"
+      }
+    ],
+    "zoom": 1,
+    "nodes": [
+      {
+        "id": "trigger",
+        "label": "trigger",
+        "data": {
+          "disableBlock": false,
+          "description": "Run while any browser tab is active",
+          "type": "manual",
+          "interval": 0,
+          "date": "",
+          "time": "",
+          "shortcut": ""
+        },
+        "type": "BlockBasic",
+        "position": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      {
+        "id": "js-debug",
+        "label": "javascript-code",
+        "data": {
+          "disableBlock": false,
+          "description": "Show alert with Automa environment info",
+          "everyNewTab": false,
+          "timeout": 10000,
+          "preloadScripts": [],
+          "code": "// ---- Automa JS Environment Diagnostic ----\nvar env = {\n  hasDocument:       typeof document         !== 'undefined',\n  hasAutomaNext:     typeof automaNextBlock   !== 'undefined',\n  hasAutomaSet:      typeof automaSetVariable !== 'undefined',\n  hasAutomaRef:      typeof automaRefData     !== 'undefined',\n  url:               typeof location         !== 'undefined' ? location.href : '(no location)',\n  title:             typeof document         !== 'undefined' ? document.title : '(no document)'\n};\n\nvar msg = '[Automa Debug]\\n'\n  + 'document: '        + env.hasDocument     + '\\n'\n  + 'automaNextBlock: ' + env.hasAutomaNext    + '\\n'\n  + 'automaSetVariable: '+ env.hasAutomaSet   + '\\n'\n  + 'automaRefData: '   + env.hasAutomaRef     + '\\n'\n  + 'URL: '             + env.url             + '\\n'\n  + 'Title: '           + env.title;\n\n// Show as alert so it's impossible to miss\nalert(msg);\n\n// Also log to browser console\nconsole.log(msg);\n\n// Advance the workflow if the function is available\nif (typeof automaNextBlock === 'function') {\n  automaNextBlock({ data: JSON.stringify(env) });\n}\n// If automaNextBlock is NOT available, the block will time out (10s).\n// The alert() will still have appeared, which is the key diagnostic signal."
+        },
+        "type": "BlockBasic",
+        "position": {
+          "x": 320,
+          "y": 0
+        }
+      }
+    ]
+  },
+  "table": [],
+  "dataColumns": [],
+  "description": "Diagnostic workflow: shows an alert with JS environment info to confirm Automa block execution works.",
+  "trigger": null,
+  "createdAt": 1743685200000,
+  "updatedAt": 1743685200000,
+  "isDisabled": false,
+  "settings": {
+    "blockDelay": 200,
+    "saveLog": true,
+    "debugMode": true,
+    "onError": "continue",
+    "executedBlockOnWeb": true,
+    "inputAutofill": false,
+    "insertDefaultColumn": false,
+    "defaultColumnName": "column"
+  },
+  "globalData": "{}",
+  "version": "1.21.x"
+}
