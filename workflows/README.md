@@ -1,6 +1,6 @@
 # Workflows
 
-## [GitHub → Automa Import](github-import.json)
+## [GitHub → Automa Import](github-import/github-import.json)
 
 Fetches an Automa workflow JSON from the current GitHub page, downloads it to your PC, and shows step-by-step instructions to finish importing it into Automa.
 
@@ -12,7 +12,7 @@ Fetches an Automa workflow JSON from the current GitHub page, downloads it to yo
 
 ### Import & usage steps
 
-1. Import `github-import.json` into Automa once via the dashboard **"Import workflow"** button (⭳)
+1. Import `github-import/github-import.json` into Automa once via the dashboard **"Import workflow"** button (⭳)
 2. Open any GitHub page that shows an Automa workflow JSON file, for example:
    ```
    https://github.com/kotaoue/helloAutoma/blob/<branch>/workflows/<name>.json
