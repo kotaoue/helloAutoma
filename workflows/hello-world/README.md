@@ -20,5 +20,3 @@ When triggered manually, it displays a browser notification with the message **"
 3. Click **Import** and select `hello-world.json`.
 4. Click the **Run** button to execute the workflow.
 5. A browser notification saying **"Hello, World!"** will appear.
-
-> **Note:** Your browser must allow notifications from the Automa extension for the notification block to work.
