@@ -4,14 +4,14 @@
 
 A minimal Hello World workflow to help you understand the basics of Automa.
 
-When triggered manually, it displays a browser notification with the message **"Hello, World!"**.
+When triggered manually, it runs a script that logs **"Hello, World!"** to the workflow execution log.
 
 ## Blocks used
 
 | Block | Description |
 |---|---|
 | **Trigger** (manual) | Starts the workflow when you click the run button |
-| **Notification** | Displays a browser notification with the Hello World message |
+| **Execute Script** | Runs JavaScript that logs the Hello World message |
 
 ## How to use
 
@@ -19,4 +19,4 @@ When triggered manually, it displays a browser notification with the message **"
 2. Open the Automa extension and go to **Workflows**.
 3. Click **Import** and select `hello-world.json`.
 4. Click the **Run** button to execute the workflow.
-5. A browser notification saying **"Hello, World!"** will appear.
+5. Open the workflow log to see **"Hello, World!"** in the output.
