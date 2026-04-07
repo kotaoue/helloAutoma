@@ -1,7 +1,7 @@
 {
   "name": "Hello World",
   "icon": "👋",
-  "description": "A minimal Hello World workflow. When run, it executes a script that logs Hello, World! — a great starting point for understanding how Automa works.",
+  "description": "A minimal Hello World workflow. When run, it copies Hello, World! to the clipboard — a great starting point for understanding how Automa works.",
   "version": "1.28.4",
   "globalData": "",
   "table": [],
@@ -23,11 +23,11 @@
   "drawflow": {
     "edges": [
       {
-        "id": "vueflow__edge-trigger-1trigger-1-output-1-javascript-1javascript-1-input-1",
+        "id": "vueflow__edge-trigger-1trigger-1-output-1-clipboard-1clipboard-1-input-1",
         "source": "trigger-1",
-        "target": "javascript-1",
+        "target": "clipboard-1",
         "sourceHandle": "trigger-1-output-1",
-        "targetHandle": "javascript-1-input-1",
+        "targetHandle": "clipboard-1-input-1",
         "type": "custom",
         "updatable": true,
         "selectable": true,
@@ -100,8 +100,8 @@
         }
       },
       {
-        "id": "javascript-1",
-        "label": "javascript",
+        "id": "clipboard-1",
+        "label": "clipboard",
         "type": "BlockBasic",
         "position": { "x": 388, "y": 200 },
         "computedPosition": { "x": 388, "y": 200, "z": 0 },
@@ -109,7 +109,7 @@
         "handleBounds": {
           "source": [
             {
-              "id": "javascript-1-output-1",
+              "id": "clipboard-1-output-1",
               "position": "right",
               "x": 196,
               "y": 28,
@@ -119,7 +119,7 @@
           ],
           "target": [
             {
-              "id": "javascript-1-input-1",
+              "id": "clipboard-1-input-1",
               "position": "left",
               "x": -20,
               "y": 28,
@@ -136,8 +136,8 @@
         "data": {
           "disableBlock": false,
           "description": "",
-          "code": "automaLog('Hello, World!');\nreturn 'Hello, World!';",
-          "everyNewTab": false
+          "copyFrom": "custom-text",
+          "text": "Hello, World!"
         }
       }
     ],

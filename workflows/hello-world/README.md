@@ -4,14 +4,14 @@
 
 A minimal Hello World workflow to help you understand the basics of Automa.
 
-When triggered manually, it runs a script that logs **"Hello, World!"** to the workflow execution log.
+When triggered manually, it copies **"Hello, World!"** to the clipboard.
 
 ## Blocks used
 
 | Block | Description |
 |---|---|
 | **Trigger** (manual) | Starts the workflow when you click the run button |
-| **Execute Script** | Runs JavaScript that logs the Hello World message |
+| **Clipboard** | Copies the Hello World message to the clipboard |
 
 ## How to use
 
@@ -19,4 +19,4 @@ When triggered manually, it runs a script that logs **"Hello, World!"** to the w
 2. Open the Automa extension and go to **Workflows**.
 3. Click **Import** and select `hello-world.json`.
 4. Click the **Run** button to execute the workflow.
-5. Open the workflow log to see **"Hello, World!"** in the output.
+5. Paste anywhere to confirm **"Hello, World!"** is in the clipboard.
