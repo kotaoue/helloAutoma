@@ -1,109 +1,108 @@
 # AGENTS.md
 
-このリポジトリは [Automa](https://chromewebstore.google.com/detail/automa/infppggnoaenmfagbfknfkancpbljcca) のワークフロー集です。  
-AI コーディングエージェントがこのリポジトリで作業する際のガイドラインを以下にまとめます。
+This repository is a collection of [Automa](https://chromewebstore.google.com/detail/automa/infppggnoaenmfagbfknfkancpbljcca) workflows.  
+The following guidelines are for AI coding agents working in this repository.
 
 ---
 
-## Automa とは
+## What is Automa
 
-Automa はブラウザ上の繰り返し作業を自動化するノーコード拡張機能です。  
-クリック・フォーム入力・データ抽出・スケジュール実行などを「ブロック」を繋ぎ合わせて実現します。  
-ワークフローは JSON ファイルとして保存・エクスポート・インポートできます。
+Automa is a no-code browser extension for automating repetitive tasks.  
+It lets you chain together "blocks" for clicks, form input, data extraction, scheduled execution, and more.  
+Workflows are saved, exported, and imported as JSON files.
 
-- 公式サイト: <https://www.automa.site>
-- ドキュメント: <https://docs.extension.automa.site>
+- Official site: <https://www.automa.site>
+- Documentation: <https://docs.extension.automa.site>
 - Chrome Web Store: <https://chromewebstore.google.com/detail/automa/infppggnoaenmfagbfknfkancpbljcca>
 
 ---
 
-## リポジトリ構成
+## Repository Structure
 
 ```
-workflows/          # Automa ワークフロー JSON ファイルの置き場所
-  README.md         # 各ワークフローの説明一覧
+workflows/          # Automa workflow JSON files
+  README.md         # Description of each workflow
   <name>/
-    <name>.json     # ワークフロー本体
-README.md           # リポジトリ概要
-AGENTS.md           # このファイル（AI エージェント向けガイド）
-cspell.json         # スペルチェック設定
+    <name>.json     # Workflow file
+README.md           # Repository overview
+AGENTS.md           # This file (guide for AI agents)
+cspell.json         # Spell-check configuration
 ```
 
 ---
 
-## ワークフロー JSON の追加・編集ルール
+## Rules for Adding and Editing Workflow JSON
 
-1. `workflows/<ワークフロー名>/` ディレクトリを作成し、その中に JSON ファイルを置く。
-2. ファイル名はディレクトリ名と揃える（例: `workflows/my-workflow/my-workflow.json`）。
-3. JSON の内容は Automa 拡張機能からエクスポートしたものをそのまま使用する。
-4. ワークフローを追加・更新したら `workflows/README.md` にも説明を追記する。
+1. Create a `workflows/<workflow-name>/` directory and place the JSON file inside it.
+2. The file name must match the directory name (e.g. `workflows/my-workflow/my-workflow.json`).
+3. Use the JSON exactly as exported from the Automa extension.
+4. When adding or updating a workflow, also add a description to `workflows/README.md`.
 
 ---
 
-## Automa Chrome Extension Builder（CEB）の使い方
+## Using the Automa Chrome Extension Builder (CEB)
 
-Automa CEB を使うと、ワークフローを**スタンドアロンの Chrome 拡張機能**としてパッケージ化し、  
-他のユーザーへ配布したり Chrome Web Store へ公開したりできます。
+Automa CEB lets you package workflows into a **standalone Chrome extension** that can be distributed to other users or published to the Chrome Web Store.
 
 > **Note**  
-> Automa CEB は現在 **Beta** です。バグや不足機能は [Automa Discord](https://discord.gg/C6khwwTE84) へ報告してください。
+> Automa CEB is currently in **Beta**. Report bugs or missing features on the [Automa Discord](https://discord.gg/C6khwwTE84).
 
-### 1. 拡張機能の新規作成
+### 1. Creating a New Extension
 
-1. [automa.site](https://www.automa.site) の **"My extension"** ボタンをクリックして [拡張機能一覧ページ](https://extension.automa.site/extensions) を開く。
-2. **"New extension"** ボタンをクリックし、拡張機能の名前と説明を入力する。
+1. Click the **"My extension"** button on [automa.site](https://www.automa.site) to open the [extensions page](https://extension.automa.site/extensions).
+2. Click **"New extension"** and enter a name and description.
 
-### 2. ダッシュボードの構成
+### 2. Dashboard Overview
 
-拡張機能を選択するとダッシュボードが開く。主なセクションは以下の 5 つ。
+Selecting an extension opens its dashboard. There are five main sections:
 
-| セクション | 説明 |
+| Section | Description |
 |---|---|
-| **Workflows** | ワークフローの追加・更新・削除 |
-| **Details** | 名前・説明・アイコンの編集 |
-| **Customize** | UI のカスタマイズ・カスタムスクリプトの注入 |
-| **Crash Logs** | ワークフロー実行時のエラーログ確認 |
-| **Analytics** | インストール数・アクティブユーザー・実行回数の確認 |
+| **Workflows** | Add, update, and delete workflows |
+| **Details** | Edit the name, description, and icon |
+| **Customize** | Customize the UI or inject a custom script |
+| **Crash Logs** | View errors that occurred during workflow execution |
+| **Analytics** | See install count, active users, and execution count |
 
-ヘッダーでは以下の操作ができる。
+From the dashboard header you can:
 
-- ドラフトバージョンの切り替え
-- 拡張機能ファイルの生成
-- 変更の保存
-- 拡張機能の公開（Publish）
+- Switch the current draft version
+- Generate the extension file
+- Save changes
+- Publish the extension
 
-### 3. ワークフローの追加
+### 3. Adding Workflows
 
-1. ダッシュボードの **Workflows** タブを開き **"+ Workflow"** をクリック。
-2. 追加方法を選択する。
-   - **From JSON file** — Automa 拡張機能からエクスポートした JSON ファイルを選択する。
-   - **From Automa extension** — Automa v1.24.0 以降がインストールされている場合、直接インポートできる。
+1. Open the **Workflows** tab in the dashboard and click **"+ Workflow"**.
+2. Choose how to add the workflow:
+   - **From JSON file** — select a JSON file exported from the Automa extension.
+   - **From Automa extension** — available if Automa v1.24.0 or later is installed.
 
-#### ワークフローの更新・削除
+#### Updating and Deleting Workflows
 
-- **更新**: ワークフロー横の更新アイコンをクリックし、新しい JSON またはインポート元を選択する。  
-  追加・更新・削除した内容は、インストール済みのすべてのユーザーに自動で反映される。
-- **削除**: 削除ボタンをクリック。複数選択してまとめて削除することも可能。
-- **Invisible**: チェックを入れると、ユーザーはそのワークフローを手動実行できなくなる。
+- **Update**: Click the update icon next to the workflow, then select a new JSON or import source.  
+  All additions, updates, and deletions are automatically applied to every user who has the extension installed.
+- **Delete**: Click the delete button. You can also select multiple workflows and delete them at once.
+- **Invisible**: When checked, the workflow is hidden from users so it cannot be run manually.
 
-### 4. 拡張機能のパッケージ化と公開
+### 4. Publishing the Extension
 
-1. ダッシュボードの **"Publish"** ボタンをクリックして拡張機能を公開する。
-2. 公開後、**Details** タブのバージョン履歴セクションに表示されるダウンロードボタンから ZIP ファイルを取得する。
+1. Click the **"Publish"** button in the dashboard header.
+2. After publishing, go to the **Details** tab and click the download button in the version history section to get the ZIP file.
 
-### 5. 拡張機能のインストール
+### 5. Installing the Extension
 
-ダウンロードした ZIP ファイルを Chromium 系ブラウザ（Chrome・Edge・Brave など）にインストールする手順。
+Install the downloaded ZIP file in a Chromium-based browser (Chrome, Edge, Brave, etc.):
 
-1. `chrome://extensions` を開く。
-2. 右上の **"Developer mode"** スイッチを有効にする（Google Chrome の場合）。
-3. ZIP ファイルをそのページにドラッグ＆ドロップする。
+1. Open `chrome://extensions`.
+2. Enable the **"Developer mode"** switch in the top-right corner (Google Chrome).
+3. Drag and drop the ZIP file onto that page.
 
 ---
 
-## AI エージェントへの注意事項
+## Notes for AI Agents
 
-- ワークフロー JSON は **Automa 独自のスキーマ**を持つ。スキーマを勝手に変更しないこと。
-- JSON の内容を変更する場合は、実際に Automa 拡張機能でインポートして動作確認を行うこと。
-- 新しいワークフローを追加する場合は必ず `workflows/README.md` に説明を追記すること。
-- このリポジトリにはビルドスクリプトやテストスイートは存在しない。コード品質の確認は `cspell.json` によるスペルチェックのみ行う（`npx cspell "**"`）。
+- Workflow JSON files use **Automa's own schema**. Do not modify the schema arbitrarily.
+- If you change the contents of a JSON file, verify the workflow by importing it into the Automa extension.
+- When adding a new workflow, always add a description to `workflows/README.md`.
+- This repository has no build scripts or test suite. The only quality check is spell-checking via `cspell.json` (`npx cspell "**"`).
