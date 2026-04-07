@@ -4,7 +4,10 @@
     "dictionaryDefinitions": [],
     "dictionaries": [],
     "words": [
-        "Automa"
+        "arrowclosed",
+        "Automa",
+        "drawflow",
+        "vueflow"
     ],
     "ignoreWords": [],
     "import": []
