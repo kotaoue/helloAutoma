@@ -1,0 +1,97 @@
+{
+  "id": "github-import",
+  "name": "GitHub → Automa Import",
+  "icon": "riDownloadCloud2Line",
+  "folderId": null,
+  "content": null,
+  "connectedTable": null,
+  "drawflow": {
+    "edges": [
+      {
+        "id": "edge-1",
+        "source": "trigger",
+        "target": "active-tab",
+        "sourceHandle": "output-1",
+        "targetHandle": "input-1"
+      },
+      {
+        "id": "edge-2",
+        "source": "active-tab",
+        "target": "js-click-download",
+        "sourceHandle": "output-1",
+        "targetHandle": "input-1"
+      }
+    ],
+    "zoom": 1,
+    "nodes": [
+      {
+        "id": "trigger",
+        "label": "trigger",
+        "data": {
+          "disableBlock": false,
+          "description": "Run while viewing a GitHub page for an Automa workflow JSON file",
+          "type": "manual",
+          "interval": 0,
+          "date": "",
+          "time": "",
+          "shortcut": ""
+        },
+        "type": "BlockBasic",
+        "position": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      {
+        "id": "active-tab",
+        "label": "active-tab",
+        "data": {
+          "disableBlock": false,
+          "description": "Set the current browser tab as the active tab"
+        },
+        "type": "BlockBasic",
+        "position": {
+          "x": 200,
+          "y": 0
+        }
+      },
+      {
+        "id": "js-click-download",
+        "label": "javascript-code",
+        "data": {
+          "disableBlock": false,
+          "description": "Click GitHub's native \"Download raw file\" button",
+          "context": "website",
+          "everyNewTab": false,
+          "timeout": 30000,
+          "preloadScripts": [],
+          "code": "// ---- GitHub → Automa Import ----\n// Clicks GitHub's native \"Download raw file\" button on a blob page.\n// Console logs are prefixed [Automa Import] — filter by that in DevTools (F12 → Console).\n\n(function () {\n  console.log('[Automa Import] Step 1: Workflow started. URL =', location.href);\n\n  // Must be on a GitHub blob (file view) page\n  if (!location.href.match(/^https:\\/\\/github\\.com\\/[^/]+\\/[^/]+\\/blob\\//)) {\n    console.log('[Automa Import] Step 2: FAIL — not on a GitHub blob page');\n    alert(\n      '[Automa Import] Please run this workflow while viewing a GitHub file page.\\n\\n' +\n      'Example URL:\\n' +\n      'https://github.com/kotaoue/helloAutoma/blob/<branch>/workflows/<name>.json'\n    );\n    automaNextBlock({ data: 'Error: not a GitHub blob page' });\n    return;\n  }\n  console.log('[Automa Import] Step 2: GitHub blob page confirmed');\n\n  // Find the \"Download raw file\" button in the GitHub toolbar\n  var btn = document.querySelector('[aria-label=\"Download raw file\"]');\n  if (!btn) {\n    console.log('[Automa Import] Step 3: FAIL — \"Download raw file\" button not found in page');\n    alert(\n      '[Automa Import] Could not find the \"Download raw file\" button on this page.\\n\\n' +\n      'Make sure you are viewing a file on GitHub (not a folder or the repo root).'\n    );\n    automaNextBlock({ data: 'Error: download button not found' });\n    return;\n  }\n  console.log('[Automa Import] Step 3: Found \"Download raw file\" button, clicking…');\n\n  btn.click();\n\n  console.log('[Automa Import] Step 4: SUCCESS — download triggered');\n  automaNextBlock({ data: 'Downloaded' });\n})();"
+        },
+        "type": "BlockBasic",
+        "position": {
+          "x": 400,
+          "y": 0
+        }
+      }
+    ]
+  },
+  "table": [],
+  "dataColumns": [],
+  "description": "Clicks the \"Download raw file\" button on a GitHub file page to save the JSON to your PC.",
+  "trigger": null,
+  "createdAt": 1743685200000,
+  "updatedAt": 1743685200000,
+  "isDisabled": false,
+  "settings": {
+    "blockDelay": 200,
+    "saveLog": true,
+    "debugMode": true,
+    "onError": "continue",
+    "executedBlockOnWeb": true,
+    "inputAutofill": false,
+    "insertDefaultColumn": false,
+    "defaultColumnName": "column"
+  },
+  "globalData": "{}",
+  "version": "1.21.x"
+}
