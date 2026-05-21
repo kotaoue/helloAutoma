@@ -13,12 +13,7 @@ GitHub には大きく 2 種類のページがあります。
 | **ファイルページ** ✅ | `github.com/.../blob/<branch>/path/to/file.json` | ファイルの中身を表示する画面。このワークフローが動作します |
 | フォルダページ ❌ | `github.com/.../tree/<branch>/path/to/folder` | フォルダの一覧を表示する画面。動作しません |
 
-**具体例（ファイルページ）:**
-
-```
-https://github.com/kotaoue/helloAutoma/blob/main/workflows/hello-world/hello-world.json
-```
-
+<https://github.com/kotaoue/helloAutoma/blob/main/workflows/hello-world/hello-world.json>
 上の URL をブラウザで開くと、JSON ファイルの中身がハイライトされて表示されます。その状態で右クリック → "Import to Automa" を実行してください。
 
 ## Blocks used
