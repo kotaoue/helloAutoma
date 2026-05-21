@@ -1,0 +1,149 @@
+{
+  "name": "GitHub → Automa Import",
+  "icon": "riDownloadCloud2Line",
+  "description": "GitHubのファイルページで右クリック → \"Import to Automa\" を選ぶと、\"Download raw file\" ボタンを自動クリックしてワークフロー JSON をダウンロードします。",
+  "version": "1.28.4",
+  "globalData": "",
+  "table": [],
+  "settings": {
+    "publicId": "",
+    "blockDelay": 200,
+    "saveLog": true,
+    "debugMode": false,
+    "restartTimes": 3,
+    "notification": true,
+    "execContext": "popup",
+    "reuseLastState": false,
+    "inputAutocomplete": true,
+    "onError": "continue",
+    "executedBlockOnWeb": true,
+    "insertDefaultColumn": false,
+    "defaultColumnName": "column"
+  },
+  "drawflow": {
+    "edges": [
+      {
+        "id": "vueflow__edge-trigger-1trigger-1-output-1-javascript-code-1javascript-code-1-input-1",
+        "source": "trigger-1",
+        "target": "javascript-code-1",
+        "sourceHandle": "trigger-1-output-1",
+        "targetHandle": "javascript-code-1-input-1",
+        "type": "custom",
+        "updatable": true,
+        "selectable": true,
+        "markerEnd": "arrowclosed",
+        "data": {},
+        "events": {}
+      }
+    ],
+    "nodes": [
+      {
+        "id": "trigger-1",
+        "label": "trigger",
+        "type": "BlockBasic",
+        "position": { "x": 96, "y": 200 },
+        "computedPosition": { "x": 96, "y": 200, "z": 0 },
+        "dimensions": { "width": 192, "height": 72 },
+        "handleBounds": {
+          "source": [
+            {
+              "id": "trigger-1-output-1",
+              "position": "right",
+              "x": 196,
+              "y": 28,
+              "width": 16,
+              "height": 16
+            }
+          ]
+        },
+        "selected": false,
+        "dragging": false,
+        "resizing": false,
+        "initialized": true,
+        "events": {},
+        "data": {
+          "disableBlock": false,
+          "description": "GitHubファイルページで右クリック → \"Import to Automa\"",
+          "type": "context-menu",
+          "interval": 60,
+          "delay": 5,
+          "date": "",
+          "time": "00:00",
+          "url": "",
+          "shortcut": "",
+          "activeInInput": false,
+          "isUrlRegex": false,
+          "days": [],
+          "contextMenuName": "Import to Automa",
+          "contextTypes": ["page"],
+          "parameters": [],
+          "preferParamsInTab": false,
+          "observeElement": {
+            "selector": "",
+            "baseSelector": "",
+            "matchPattern": "",
+            "targetOptions": {
+              "subtree": false,
+              "childList": true,
+              "attributes": false,
+              "attributeFilter": [],
+              "characterData": false
+            },
+            "baseElOptions": {
+              "subtree": false,
+              "childList": true,
+              "attributes": false,
+              "attributeFilter": [],
+              "characterData": false
+            }
+          }
+        }
+      },
+      {
+        "id": "javascript-code-1",
+        "label": "javascript-code",
+        "type": "BlockBasic",
+        "position": { "x": 388, "y": 200 },
+        "computedPosition": { "x": 388, "y": 200, "z": 0 },
+        "dimensions": { "width": 192, "height": 72 },
+        "handleBounds": {
+          "source": [
+            {
+              "id": "javascript-code-1-output-1",
+              "position": "right",
+              "x": 196,
+              "y": 28,
+              "width": 16,
+              "height": 16
+            }
+          ],
+          "target": [
+            {
+              "id": "javascript-code-1-input-1",
+              "position": "left",
+              "x": -20,
+              "y": 28,
+              "width": 16,
+              "height": 16
+            }
+          ]
+        },
+        "selected": false,
+        "dragging": false,
+        "resizing": false,
+        "initialized": true,
+        "events": {},
+        "data": {
+          "disableBlock": false,
+          "description": "GitHubの \"Download raw file\" ボタンをクリックしてJSONをダウンロード",
+          "context": "website",
+          "everyNewTab": false,
+          "timeout": 30000,
+          "preloadScripts": [],
+          "code": "(function () {\n  if (!location.href.match(/^https:\\/\\/github\\.com\\/[^/]+\\/[^/]+\\/blob\\//))\n  {\n    alert(\n      '[Automa Import] GitHubのファイルページで実行してください。\\n\\n' +\n      '例: https://github.com/kotaoue/helloAutoma/blob/<branch>/workflows/<name>.json'\n    );\n    automaNextBlock({ data: 'Error: not a GitHub blob page' });\n    return;\n  }\n\n  var btn = document.querySelector('[aria-label=\"Download raw file\"]');\n  if (!btn) {\n    alert(\n      '[Automa Import] \"Download raw file\" ボタンが見つかりませんでした。\\n\\n' +\n      'ファイルページを開き直してから再実行してください。'\n    );\n    automaNextBlock({ data: 'Error: download button not found' });\n    return;\n  }\n\n  btn.click();\n  automaNextBlock({ data: 'Downloaded' });\n})()"
+        }
+      }
+    ],
+    "zoom": 1
+  }
+}
