@@ -7,7 +7,7 @@ GitHubのファイルページで右クリックすると **"Import to Automa"**
 ## Blocks used
 
 | Block | Description |
-|---|---|
+| --- | --- |
 | **Trigger** (context-menu) | 任意のページで右クリック → "Import to Automa" で起動 |
 | **JavaScript Code** | GitHubのblob URLであることを確認し、"Download raw file" ボタンをクリック |
 
