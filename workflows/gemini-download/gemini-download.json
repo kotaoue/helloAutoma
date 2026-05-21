@@ -1,0 +1,258 @@
+{
+  "name": "Gemini → Markdown Download",
+  "icon": "riFlowChart",
+  "description": "現在開いているGeminiの会話をスクレイプし、Markdownファイルとしてローカルに保存します。",
+  "version": "1.28.4",
+  "globalData": "",
+  "table": [],
+  "settings": {
+    "publicId": "",
+    "blockDelay": 500,
+    "saveLog": true,
+    "debugMode": true,
+    "restartTimes": 3,
+    "notification": true,
+    "execContext": "popup",
+    "reuseLastState": false,
+    "inputAutocomplete": true,
+    "onError": "continue",
+    "executedBlockOnWeb": true,
+    "insertDefaultColumn": false,
+    "defaultColumnName": "column"
+  },
+  "drawflow": {
+    "edges": [
+      {
+        "id": "vueflow__edge-trigger-1trigger-1-output-1-active-tab-1active-tab-1-input-1",
+        "source": "trigger-1",
+        "target": "active-tab-1",
+        "sourceHandle": "trigger-1-output-1",
+        "targetHandle": "active-tab-1-input-1",
+        "type": "custom",
+        "updatable": true,
+        "selectable": true,
+        "markerEnd": "arrowclosed",
+        "data": {},
+        "events": {}
+      },
+      {
+        "id": "vueflow__edge-active-tab-1active-tab-1-output-1-javascript-code-1javascript-code-1-input-1",
+        "source": "active-tab-1",
+        "target": "javascript-code-1",
+        "sourceHandle": "active-tab-1-output-1",
+        "targetHandle": "javascript-code-1-input-1",
+        "type": "custom",
+        "updatable": true,
+        "selectable": true,
+        "markerEnd": "arrowclosed",
+        "data": {},
+        "events": {}
+      },
+      {
+        "id": "vueflow__edge-javascript-code-1javascript-code-1-output-1-javascript-code-2javascript-code-2-input-1",
+        "source": "javascript-code-1",
+        "target": "javascript-code-2",
+        "sourceHandle": "javascript-code-1-output-1",
+        "targetHandle": "javascript-code-2-input-1",
+        "type": "custom",
+        "updatable": true,
+        "selectable": true,
+        "markerEnd": "arrowclosed",
+        "data": {},
+        "events": {}
+      }
+    ],
+    "nodes": [
+      {
+        "id": "trigger-1",
+        "label": "trigger",
+        "type": "BlockBasic",
+        "position": { "x": 96, "y": 200 },
+        "computedPosition": { "x": 96, "y": 200, "z": 0 },
+        "dimensions": { "width": 192, "height": 72 },
+        "handleBounds": {
+          "source": [
+            {
+              "id": "trigger-1-output-1",
+              "position": "right",
+              "x": 196,
+              "y": 28,
+              "width": 16,
+              "height": 16
+            }
+          ]
+        },
+        "selected": false,
+        "dragging": false,
+        "resizing": false,
+        "initialized": true,
+        "events": {},
+        "data": {
+          "disableBlock": false,
+          "description": "Geminiの会話ページを開いた状態で手動実行",
+          "type": "manual",
+          "interval": 60,
+          "delay": 5,
+          "date": "",
+          "time": "00:00",
+          "url": "",
+          "shortcut": "",
+          "activeInInput": false,
+          "isUrlRegex": false,
+          "days": [],
+          "contextMenuName": "",
+          "contextTypes": [],
+          "parameters": [],
+          "preferParamsInTab": false,
+          "observeElement": {
+            "selector": "",
+            "baseSelector": "",
+            "matchPattern": "",
+            "targetOptions": {
+              "subtree": false,
+              "childList": true,
+              "attributes": false,
+              "attributeFilter": [],
+              "characterData": false
+            },
+            "baseElOptions": {
+              "subtree": false,
+              "childList": true,
+              "attributes": false,
+              "attributeFilter": [],
+              "characterData": false
+            }
+          }
+        }
+      },
+      {
+        "id": "active-tab-1",
+        "label": "active-tab",
+        "type": "BlockBasic",
+        "position": { "x": 388, "y": 200 },
+        "computedPosition": { "x": 388, "y": 200, "z": 0 },
+        "dimensions": { "width": 192, "height": 72 },
+        "handleBounds": {
+          "source": [
+            {
+              "id": "active-tab-1-output-1",
+              "position": "right",
+              "x": 196,
+              "y": 28,
+              "width": 16,
+              "height": 16
+            }
+          ],
+          "target": [
+            {
+              "id": "active-tab-1-input-1",
+              "position": "left",
+              "x": -20,
+              "y": 28,
+              "width": 16,
+              "height": 16
+            }
+          ]
+        },
+        "selected": false,
+        "dragging": false,
+        "resizing": false,
+        "initialized": true,
+        "events": {},
+        "data": {
+          "disableBlock": false,
+          "description": "現在のブラウザタブをアクティブタブとして登録"
+        }
+      },
+      {
+        "id": "javascript-code-1",
+        "label": "javascript-code",
+        "type": "BlockBasic",
+        "position": { "x": 680, "y": 200 },
+        "computedPosition": { "x": 680, "y": 200, "z": 0 },
+        "dimensions": { "width": 192, "height": 72 },
+        "handleBounds": {
+          "source": [
+            {
+              "id": "javascript-code-1-output-1",
+              "position": "right",
+              "x": 196,
+              "y": 28,
+              "width": 16,
+              "height": 16
+            }
+          ],
+          "target": [
+            {
+              "id": "javascript-code-1-input-1",
+              "position": "left",
+              "x": -20,
+              "y": 28,
+              "width": 16,
+              "height": 16
+            }
+          ]
+        },
+        "selected": false,
+        "dragging": false,
+        "resizing": false,
+        "initialized": true,
+        "events": {},
+        "data": {
+          "disableBlock": false,
+          "description": "Geminiの会話をスクレイプしてtitle/contentを変数にセット",
+          "context": "website",
+          "everyNewTab": false,
+          "timeout": 20000,
+          "preloadScripts": [],
+          "code": "// Strategy 1: <user-query> / <model-response> custom elements (Gemini 2024+)\nvar rawTitle = document.title || '';\nvar title = rawTitle.replace(/\\s*[-\\u2013]\\s*Gemini\\s*$/i, '').trim() || 'Gemini Chat';\n\nvar pairs = [];\n\nvar userQueryEls = document.querySelectorAll('user-query');\nvar modelRespEls = document.querySelectorAll('model-response');\nif (userQueryEls.length > 0 || modelRespEls.length > 0) {\n  var max1 = Math.max(userQueryEls.length, modelRespEls.length);\n  for (var i = 0; i < max1; i++) {\n    if (userQueryEls[i]) pairs.push({ role: 'User',   text: userQueryEls[i].innerText.trim() });\n    if (modelRespEls[i]) pairs.push({ role: 'Gemini', text: modelRespEls[i].innerText.trim() });\n  }\n}\n\n// Strategy 2: data-message-author-role attribute\nif (pairs.length === 0) {\n  var msgEls = document.querySelectorAll('[data-message-author-role]');\n  for (var j = 0; j < msgEls.length; j++) {\n    var role = msgEls[j].getAttribute('data-message-author-role') === 'user' ? 'User' : 'Gemini';\n    pairs.push({ role: role, text: msgEls[j].innerText.trim() });\n  }\n}\n\n// Strategy 3: class-based fallback\nif (pairs.length === 0) {\n  var userEls  = document.querySelectorAll('.query-text, .user-query-text');\n  var modelEls = document.querySelectorAll('.model-response-text, .response-content');\n  var max3 = Math.max(userEls.length, modelEls.length);\n  for (var k = 0; k < max3; k++) {\n    if (userEls[k])  pairs.push({ role: 'User',   text: userEls[k].innerText.trim() });\n    if (modelEls[k]) pairs.push({ role: 'Gemini', text: modelEls[k].innerText.trim() });\n  }\n}\n\nvar validPairs = pairs.filter(function(p) { return p.text; });\nvar lines = validPairs.map(function(p) { return '**' + p.role + ':**\\n\\n' + p.text; });\n\nvar content = lines.length > 0\n  ? lines.join('\\n\\n---\\n\\n')\n  : '<!-- No conversation messages found. Run this on a conversation page (URL ends with /app/XXXXXX). -->';\n\nconsole.log('[Gemini Download] title:', title, '| messages found:', validPairs.length);\n\nautomaSetVariable('title',    title);\nautomaSetVariable('content',  content);\nautomaSetVariable('msgCount', String(validPairs.length));\nautomaNextBlock({ data: 'scraped ' + validPairs.length + ' messages from: ' + title });"
+        }
+      },
+      {
+        "id": "javascript-code-2",
+        "label": "javascript-code",
+        "type": "BlockBasic",
+        "position": { "x": 972, "y": 200 },
+        "computedPosition": { "x": 972, "y": 200, "z": 0 },
+        "dimensions": { "width": 192, "height": 72 },
+        "handleBounds": {
+          "source": [
+            {
+              "id": "javascript-code-2-output-1",
+              "position": "right",
+              "x": 196,
+              "y": 28,
+              "width": 16,
+              "height": 16
+            }
+          ],
+          "target": [
+            {
+              "id": "javascript-code-2-input-1",
+              "position": "left",
+              "x": -20,
+              "y": 28,
+              "width": 16,
+              "height": 16
+            }
+          ]
+        },
+        "selected": false,
+        "dragging": false,
+        "resizing": false,
+        "initialized": true,
+        "events": {},
+        "data": {
+          "disableBlock": false,
+          "description": "会話をMarkdownファイルとしてダウンロード",
+          "context": "website",
+          "everyNewTab": false,
+          "timeout": 10000,
+          "preloadScripts": [],
+          "code": "var title   = automaRefData('variables', 'title')   || 'gemini';\nvar content = automaRefData('variables', 'content') || '';\n\nvar today    = new Date().toISOString().slice(0, 10);\nvar markdown = '# ' + title + '\\n\\n'\n  + '> Downloaded: ' + today + '  \\n'\n  + '> Source: ' + location.href + '\\n\\n'\n  + '---\\n\\n'\n  + content + '\\n';\n\nvar filename = (title\n  .replace(/[^a-z0-9]/gi, '_')\n  .replace(/_+/g, '_')\n  .replace(/^_|_$/g, '')\n  .toLowerCase() || 'gemini') + '.md';\n\nvar blob = new Blob([markdown], { type: 'text/markdown' });\nvar url  = URL.createObjectURL(blob);\nvar a    = document.createElement('a');\na.href     = url;\na.download = filename;\ndocument.body.appendChild(a);\na.click();\nsetTimeout(function() { URL.revokeObjectURL(url); if (a.parentNode) a.parentNode.removeChild(a); }, 1000);\n\nconsole.log('[Gemini Download] File saved as:', filename);\nautomaNextBlock({ data: 'saved: ' + filename });"
+        }
+      }
+    ],
+    "zoom": 1
+  }
+}
