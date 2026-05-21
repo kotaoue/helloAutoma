@@ -1,0 +1,150 @@
+{
+  "name": "YouTube Playlist to Markdown",
+  "icon": "📋",
+  "description": "YouTubeプレイリストページを開いた時に、プレイリスト名の Markdown ファイルを作成してダウンロードします。",
+  "version": "1.28.4",
+  "globalData": "",
+  "table": [],
+  "settings": {
+    "publicId": "",
+    "blockDelay": 0,
+    "saveLog": true,
+    "debugMode": false,
+    "restartTimes": 3,
+    "notification": true,
+    "execContext": "popup",
+    "reuseLastState": false,
+    "inputAutocomplete": true,
+    "onError": "stop-workflow",
+    "executedBlockOnWeb": false,
+    "insertDefaultColumn": false,
+    "defaultColumnName": "column"
+  },
+  "drawflow": {
+    "edges": [
+      {
+        "id": "vueflow__edge-trigger-1trigger-1-output-1-javascript-code-1javascript-code-1-input-1",
+        "source": "trigger-1",
+        "target": "javascript-code-1",
+        "sourceHandle": "trigger-1-output-1",
+        "targetHandle": "javascript-code-1-input-1",
+        "type": "custom",
+        "updatable": true,
+        "selectable": true,
+        "markerEnd": "arrowclosed",
+        "data": {},
+        "events": {}
+      }
+    ],
+    "nodes": [
+      {
+        "id": "trigger-1",
+        "label": "trigger",
+        "type": "BlockBasic",
+        "position": { "x": 96, "y": 200 },
+        "computedPosition": { "x": 96, "y": 200, "z": 0 },
+        "dimensions": { "width": 192, "height": 72 },
+        "handleBounds": {
+          "source": [
+            {
+              "id": "trigger-1-output-1",
+              "position": "right",
+              "x": 196,
+              "y": 28,
+              "width": 16,
+              "height": 16
+            }
+          ]
+        },
+        "selected": false,
+        "dragging": false,
+        "resizing": false,
+        "initialized": true,
+        "events": {},
+        "data": {
+          "disableBlock": false,
+          "description": "YouTubeプレイリストページへのアクセスで起動",
+          "type": "visit-web",
+          "interval": 60,
+          "delay": 5,
+          "date": "",
+          "time": "00:00",
+          "url": "https://www.youtube.com/playlist*",
+          "shortcut": "",
+          "activeInInput": false,
+          "isUrlRegex": false,
+          "supportSPA": true,
+          "days": [],
+          "contextMenuName": "",
+          "contextTypes": [],
+          "parameters": [],
+          "preferParamsInTab": false,
+          "observeElement": {
+            "selector": "",
+            "baseSelector": "",
+            "matchPattern": "",
+            "targetOptions": {
+              "subtree": false,
+              "childList": true,
+              "attributes": false,
+              "attributeFilter": [],
+              "characterData": false
+            },
+            "baseElOptions": {
+              "subtree": false,
+              "childList": true,
+              "attributes": false,
+              "attributeFilter": [],
+              "characterData": false
+            }
+          }
+        }
+      },
+      {
+        "id": "javascript-code-1",
+        "label": "javascript-code",
+        "type": "BlockBasic",
+        "position": { "x": 388, "y": 200 },
+        "computedPosition": { "x": 388, "y": 200, "z": 0 },
+        "dimensions": { "width": 192, "height": 72 },
+        "handleBounds": {
+          "source": [
+            {
+              "id": "javascript-code-1-output-1",
+              "position": "right",
+              "x": 196,
+              "y": 28,
+              "width": 16,
+              "height": 16
+            }
+          ],
+          "target": [
+            {
+              "id": "javascript-code-1-input-1",
+              "position": "left",
+              "x": -20,
+              "y": 28,
+              "width": 16,
+              "height": 16
+            }
+          ]
+        },
+        "selected": false,
+        "dragging": false,
+        "resizing": false,
+        "initialized": true,
+        "events": {},
+        "data": {
+          "disableBlock": false,
+          "description": "全動画をスクロールで読み込み、Markdown ファイルとしてダウンロードする",
+          "code": "(async () => {\n  const INITIAL_PAGE_LOAD_DELAY = 3000;  // ms: wait for SPA render\n  const SCROLL_DELAY = 1500;             // ms: wait after each scroll step\n  const MAX_SCROLL_ITERATIONS = 100;     // safety cap for very large playlists\n  const MAX_SCROLL_DURATION_MS = 120000; // 2-minute wall-clock timeout\n\n  await new Promise(r => setTimeout(r, INITIAL_PAGE_LOAD_DELAY));\n\n  // Scroll until no new items load or the time limit is reached.\n  // Do NOT break early when count is still 0 - the page may still be rendering.\n  let prevCount = 0;\n  const scrollStart = Date.now();\n  for (let i = 0; i < MAX_SCROLL_ITERATIONS; i++) {\n    if (Date.now() - scrollStart > MAX_SCROLL_DURATION_MS) break;\n    const items = document.querySelectorAll('ytd-playlist-video-renderer');\n    if (items.length > 0 && items.length === prevCount) break;\n    prevCount = items.length;\n    window.scrollTo(0, document.documentElement.scrollHeight);\n    await new Promise(r => setTimeout(r, SCROLL_DELAY));\n  }\n\n  window.scrollTo(0, 0);\n\n  // Try multiple selectors for the playlist title (YouTube occasionally updates the DOM)\n  const titleEl = document.querySelector(\n    'h1.ytd-playlist-header-renderer yt-formatted-string, ' +\n    'ytd-playlist-header-renderer h1, ' +\n    'yt-formatted-string#title, ' +\n    '#title.ytd-playlist-header-renderer'\n  );\n  const playlistTitle = (titleEl ? titleEl.textContent.trim() : 'playlist')\n    .replace(/[\\/:\\*\\?\"<>|]/g, '_');\n\n  const videoItems = document.querySelectorAll('ytd-playlist-video-renderer');\n  const lines = [];\n\n  videoItems.forEach(item => {\n    const linkEl = item.querySelector('a#video-title');\n    if (linkEl) {\n      const title = linkEl.textContent.trim();\n      const href = linkEl.getAttribute('href');\n      if (title && href) {\n        lines.push('- [' + title + '](https://www.youtube.com' + href + ')');\n      }\n    }\n  });\n\n  if (lines.length === 0) {\n    automaNextBlock({ message: '動画が見つかりませんでした' });\n    return;\n  }\n\n  const markdown = lines.join('\\n') + '\\n';\n\n  const blob = new Blob([markdown], { type: 'text/markdown; charset=utf-8' });\n  const downloadUrl = URL.createObjectURL(blob);\n  const a = document.createElement('a');\n  a.href = downloadUrl;\n  a.download = playlistTitle + '.md';\n  document.body.appendChild(a);\n  a.click();\n  document.body.removeChild(a);\n  setTimeout(() => URL.revokeObjectURL(downloadUrl), 1000);\n\n  automaNextBlock({ message: 'Downloaded: ' + playlistTitle + '.md (' + lines.length + ' videos)' });\n})()",
+          "everyNewTab": false,
+          "preloadScripts": [],
+          "runBeforeLoad": false,
+          "timeout": 300000
+        }
+      }
+    ],
+    "zoom": 1
+  }
+}
