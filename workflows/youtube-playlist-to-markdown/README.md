@@ -2,13 +2,14 @@
 
 **File:** [`youtube-playlist-to-markdown.json`](youtube-playlist-to-markdown.json)
 
-YouTubeのプレイリストページにアクセスすると自動で起動し、プレイリスト内の全動画を Markdown のリスト形式でダウンロードします。
+YouTubeプレイリストページを開いた状態で Automa ボタンから手動実行すると、プレイリスト内の全動画を Markdown のリスト形式でダウンロードします。
 
 ## Blocks used
 
 | Block | Description |
 |---|---|
-| **Trigger** (visit-web, SPA対応) | `https://www.youtube.com/playlist?...` にマッチする正規表現で自動起動 |
+| **Trigger** (manual) | Automa ポップアップの ▶ ボタンで手動起動 |
+| **Active Tab** | 現在アクティブなタブ（YouTube プレイリスト）を取得 |
 | **JavaScript Code** | 動画リストを全件スクロール取得し、`<プレイリスト名>.md` をダウンロード |
 
 ## How to use
@@ -17,10 +18,25 @@ YouTubeのプレイリストページにアクセスすると自動で起動し�
 2. Open the Automa extension and go to **Workflows**.
 3. Click **Import** and select `youtube-playlist-to-markdown.json`.
    - If you have a previous version installed, **delete it first** and re-import the new file.
-4. Open any YouTube playlist page (e.g. `https://www.youtube.com/playlist?list=...`).
-5. Automa automatically triggers and downloads `<playlist name>.md` to your browser's default **Downloads** folder.
+4. Open a YouTube playlist page in your browser (e.g. `https://www.youtube.com/playlist?list=...`).
+5. Click the Automa extension icon, find this workflow, and press the **▶** (run) button.
+6. Automa downloads `<playlist name>.md` to your browser's default **Downloads** folder.
 
-> **Tip:** If the trigger does not fire, try reloading the Automa extension (go to `chrome://extensions`, find Automa, and click the reload icon). This re-registers all triggers.
+## Debugging
+
+If the download does not happen:
+
+1. Open the browser DevTools console (**F12** → **Console** tab) while on the playlist page.
+2. Run the workflow — the script logs progress with the `[Automa]` prefix:
+   ```
+   [Automa] Started. URL: https://www.youtube.com/playlist?list=...
+   [Automa] Scroll iteration 0 - items found: 0
+   [Automa] Scroll iteration 1 - items found: 100
+   ...
+   [Automa] Total video items found: 200
+   [Automa] Done: MyPlaylist.md (200 videos)
+   ```
+3. Check the Automa **Logs** panel for the workflow result message.
 
 ## Output format
 
@@ -32,6 +48,4 @@ YouTubeのプレイリストページにアクセスすると自動で起動し�
 ## Notes
 
 - The workflow scrolls to the bottom repeatedly until all lazy-loaded videos appear (capped at 100 iterations or 2 minutes).
-- `supportSPA` is enabled so the trigger also fires during in-page YouTube navigation (not only on hard reloads).
-- URL matching uses `isUrlRegex: true` with pattern `^https://www\.youtube\.com/playlist\?` to precisely match YouTube playlist URLs.
 - The downloaded file is saved to your browser's default Downloads folder.
