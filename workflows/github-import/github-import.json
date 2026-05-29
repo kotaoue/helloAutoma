@@ -1,7 +1,7 @@
 {
   "name": "GitHub → Automa Import",
   "icon": "riDownloadCloud2Line",
-  "description": "GitHubのファイルページで右クリック → \"Import to Automa\" を選ぶと、\"Download raw file\" ボタンを自動クリックしてワークフロー JSON をダウンロードします。",
+  "description": "GitHubのファイルページで右クリック → \"Import to Automa\" を選ぶと、ワークフロー JSON の raw ファイルをダウンロードします。",
   "version": "1.28.4",
   "globalData": "",
   "table": [],
@@ -75,7 +75,7 @@
           "isUrlRegex": false,
           "days": [],
           "contextMenuName": "Import to Automa",
-          "contextTypes": ["page"],
+          "contextTypes": ["page", "selection", "link", "editable", "image"],
           "parameters": [],
           "preferParamsInTab": false,
           "observeElement": {
@@ -135,12 +135,12 @@
         "events": {},
         "data": {
           "disableBlock": false,
-          "description": "GitHubの \"Download raw file\" ボタンをクリックしてJSONをダウンロード",
+          "description": "GitHubの raw ファイルURLからJSONをダウンロード",
           "context": "website",
           "everyNewTab": false,
           "timeout": 30000,
           "preloadScripts": [],
-          "code": "(function () {\n  if (!location.href.match(/^https:\\/\\/github\\.com\\/[^/]+\\/[^/]+\\/blob\\//))\n  {\n    alert(\n      '[Automa Import] GitHubのファイルページで実行してください。\\n\\n' +\n      '例: https://github.com/kotaoue/helloAutoma/blob/<branch>/workflows/<name>.json'\n    );\n    automaNextBlock({ data: 'Error: not a GitHub blob page' });\n    return;\n  }\n\n  var btn = document.querySelector('[aria-label=\"Download raw file\"]');\n  if (!btn) {\n    alert(\n      '[Automa Import] \"Download raw file\" ボタンが見つかりませんでした。\\n\\n' +\n      'ファイルページを開き直してから再実行してください。'\n    );\n    automaNextBlock({ data: 'Error: download button not found' });\n    return;\n  }\n\n  btn.click();\n  automaNextBlock({ data: 'Downloaded' });\n})()"
+          "code": "(function () {\n  function next(data) {\n    automaNextBlock({ data: data });\n  }\n\n  if (!location.href.match(/^https:\\/\\/github\\.com\\/[^/]+\\/[^/]+\\/blob\\//)) {\n    alert(\n      '[Automa Import] GitHubのファイルページで実行してください。\\n\\n' +\n      '例: https://github.com/kotaoue/helloAutoma/blob/<branch>/workflows/<name>.json'\n    );\n    next('Error: not a GitHub blob page');\n    return;\n  }\n\n  var controls = Array.prototype.slice.call(document.querySelectorAll('a, button'));\n  var downloadRawControl = controls.find(function (el) {\n    var label = [\n      el.getAttribute('aria-label'),\n      el.getAttribute('title'),\n      el.textContent\n    ].filter(Boolean).join(' ').toLowerCase();\n\n    return label.indexOf('download raw file') !== -1;\n  });\n\n  if (downloadRawControl) {\n    downloadRawControl.click();\n    next('Downloaded');\n    return;\n  }\n\n  var rawUrl = location.href.replace('/blob/', '/raw/').replace(/[?#].*$/, '');\n  var filename = rawUrl.split('/').pop() || 'workflow.json';\n  var link = document.createElement('a');\n\n  link.href = rawUrl;\n  link.download = filename;\n  document.body.appendChild(link);\n  link.click();\n  link.remove();\n  next('Downloaded from raw URL');\n})()"
         }
       }
     ],
