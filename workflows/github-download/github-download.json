@@ -1,7 +1,7 @@
 {
-  "name": "GitHub → Automa Import",
+  "name": "GitHub JSON Downloader for Automa",
   "icon": "riDownloadCloud2Line",
-  "description": "GitHubのファイルページで右クリック → \"Import to Automa\" を選ぶと、ワークフロー JSON の raw ファイルをダウンロードします。",
+  "description": "GitHubのファイルページで右クリック → \"Download JSON for Automa\" を選ぶと、そのページのワークフロー JSON をダウンロードします。Automa への直接登録は行いません。",
   "version": "1.28.4",
   "globalData": "",
   "table": [],
@@ -63,7 +63,7 @@
         "events": {},
         "data": {
           "disableBlock": false,
-          "description": "GitHubファイルページで右クリック → \"Import to Automa\"",
+          "description": "GitHubファイルページで右クリック → \"Download JSON for Automa\"",
           "type": "context-menu",
           "interval": 60,
           "delay": 5,
@@ -74,7 +74,7 @@
           "activeInInput": false,
           "isUrlRegex": false,
           "days": [],
-          "contextMenuName": "Import to Automa",
+          "contextMenuName": "Download JSON for Automa",
           "contextTypes": ["page", "selection", "link", "editable", "image"],
           "parameters": [],
           "preferParamsInTab": false,
@@ -135,12 +135,12 @@
         "events": {},
         "data": {
           "disableBlock": false,
-          "description": "GitHubの raw ファイルURLからJSONをダウンロード",
+          "description": "GitHubの raw JSON URLからファイルをダウンロード",
           "context": "website",
           "everyNewTab": false,
           "timeout": 30000,
           "preloadScripts": [],
-          "code": "(function () {\n  function next(data) {\n    automaNextBlock({ data: data });\n  }\n\n  if (!location.href.match(/^https:\\/\\/github\\.com\\/[^/]+\\/[^/]+\\/blob\\//)) {\n    alert(\n      '[Automa Import] GitHubのファイルページで実行してください。\\n\\n' +\n      '例: https://github.com/kotaoue/helloAutoma/blob/<branch>/workflows/<name>.json'\n    );\n    next('Error: not a GitHub blob page');\n    return;\n  }\n\n  var controls = Array.prototype.slice.call(document.querySelectorAll('a, button'));\n  var downloadRawControl = controls.find(function (el) {\n    var label = [\n      el.getAttribute('aria-label'),\n      el.getAttribute('title'),\n      el.textContent\n    ].filter(Boolean).join(' ').toLowerCase();\n\n    return label.indexOf('download raw file') !== -1;\n  });\n\n  if (downloadRawControl) {\n    downloadRawControl.click();\n    next('Downloaded');\n    return;\n  }\n\n  var rawUrl = location.href.replace('/blob/', '/raw/').replace(/[?#].*$/, '');\n  var filename = rawUrl.split('/').pop() || 'workflow.json';\n  var link = document.createElement('a');\n\n  link.href = rawUrl;\n  link.download = filename;\n  document.body.appendChild(link);\n  link.click();\n  link.remove();\n  next('Downloaded from raw URL');\n})()"
+          "code": "(function () {\n  function next(data) {\n    automaNextBlock({ data: data });\n  }\n\n  if (!location.href.match(/^https:\\/\\/github\\.com\\/[^/]+\\/[^/]+\\/blob\\//)) {\n    alert(\n      '[Automa Download] GitHubのファイルページで実行してください。\\n\\n' +\n      '例: https://github.com/kotaoue/helloAutoma/blob/<branch>/workflows/<name>.json'\n    );\n    next('Error: not a GitHub blob page');\n    return;\n  }\n\n  var controls = Array.prototype.slice.call(document.querySelectorAll('a, button'));\n  var downloadRawControl = controls.find(function (el) {\n    var label = [\n      el.getAttribute('aria-label'),\n      el.getAttribute('title'),\n      el.textContent\n    ].filter(Boolean).join(' ').toLowerCase();\n\n    return label.indexOf('download raw file') !== -1;\n  });\n\n  if (downloadRawControl) {\n    downloadRawControl.click();\n    next('Downloaded JSON file.');\n    return;\n  }\n\n  var rawUrl = location.href.replace('/blob/', '/raw/').replace(/[?#].*$/, '');\n  var filename = rawUrl.split('/').pop() || 'workflow.json';\n  var link = document.createElement('a');\n\n  link.href = rawUrl;\n  link.download = filename;\n  document.body.appendChild(link);\n  link.click();\n  link.remove();\n  next('Downloaded JSON file from raw URL.');\n})()"
         }
       }
     ],

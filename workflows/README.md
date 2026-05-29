@@ -6,8 +6,8 @@ A minimal Hello World workflow to help you understand the basics of Automa.
 
 See [`hello-world/README.md`](hello-world/README.md) for details.
 
-## github-import
+## github-download
 
-Right-click a GitHub file page → "Import to Automa" to download the workflow JSON automatically.
+Right-click a GitHub file page → "Download JSON for Automa" to download the workflow JSON file. This workflow only downloads the JSON; add it to Automa manually from the dashboard.
 
-See [`github-import/README.md`](github-import/README.md) for details.
+See [`github-download/README.md`](github-download/README.md) for details.
