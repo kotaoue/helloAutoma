@@ -1,0 +1,149 @@
+{
+  "name": "WIP: GitHub JSON Downloader for Automa",
+  "icon": "riDownloadCloud2Line",
+  "description": "未完成/WIP: GitHubのファイルページで右クリック → \"Download JSON for Automa\" を選ぶと、そのページのワークフロー JSON をダウンロードする想定です。現時点では安定動作していないため、検証用として扱ってください。Automa への直接登録は行いません。",
+  "version": "1.28.4",
+  "globalData": "",
+  "table": [],
+  "settings": {
+    "publicId": "",
+    "blockDelay": 200,
+    "saveLog": true,
+    "debugMode": false,
+    "restartTimes": 3,
+    "notification": true,
+    "execContext": "popup",
+    "reuseLastState": false,
+    "inputAutocomplete": true,
+    "onError": "continue",
+    "executedBlockOnWeb": true,
+    "insertDefaultColumn": false,
+    "defaultColumnName": "column"
+  },
+  "drawflow": {
+    "edges": [
+      {
+        "id": "vueflow__edge-trigger-1trigger-1-output-1-javascript-code-1javascript-code-1-input-1",
+        "source": "trigger-1",
+        "target": "javascript-code-1",
+        "sourceHandle": "trigger-1-output-1",
+        "targetHandle": "javascript-code-1-input-1",
+        "type": "custom",
+        "updatable": true,
+        "selectable": true,
+        "markerEnd": "arrowclosed",
+        "data": {},
+        "events": {}
+      }
+    ],
+    "nodes": [
+      {
+        "id": "trigger-1",
+        "label": "trigger",
+        "type": "BlockBasic",
+        "position": { "x": 96, "y": 200 },
+        "computedPosition": { "x": 96, "y": 200, "z": 0 },
+        "dimensions": { "width": 192, "height": 72 },
+        "handleBounds": {
+          "source": [
+            {
+              "id": "trigger-1-output-1",
+              "position": "right",
+              "x": 196,
+              "y": 28,
+              "width": 16,
+              "height": 16
+            }
+          ]
+        },
+        "selected": false,
+        "dragging": false,
+        "resizing": false,
+        "initialized": true,
+        "events": {},
+        "data": {
+          "disableBlock": false,
+          "description": "GitHubファイルページで右クリック → \"Download JSON for Automa\"",
+          "type": "context-menu",
+          "interval": 60,
+          "delay": 5,
+          "date": "",
+          "time": "00:00",
+          "url": "",
+          "shortcut": "",
+          "activeInInput": false,
+          "isUrlRegex": false,
+          "days": [],
+          "contextMenuName": "Download JSON for Automa",
+          "contextTypes": ["page", "selection", "link", "editable", "image"],
+          "parameters": [],
+          "preferParamsInTab": false,
+          "observeElement": {
+            "selector": "",
+            "baseSelector": "",
+            "matchPattern": "",
+            "targetOptions": {
+              "subtree": false,
+              "childList": true,
+              "attributes": false,
+              "attributeFilter": [],
+              "characterData": false
+            },
+            "baseElOptions": {
+              "subtree": false,
+              "childList": true,
+              "attributes": false,
+              "attributeFilter": [],
+              "characterData": false
+            }
+          }
+        }
+      },
+      {
+        "id": "javascript-code-1",
+        "label": "javascript-code",
+        "type": "BlockBasic",
+        "position": { "x": 388, "y": 200 },
+        "computedPosition": { "x": 388, "y": 200, "z": 0 },
+        "dimensions": { "width": 192, "height": 72 },
+        "handleBounds": {
+          "source": [
+            {
+              "id": "javascript-code-1-output-1",
+              "position": "right",
+              "x": 196,
+              "y": 28,
+              "width": 16,
+              "height": 16
+            }
+          ],
+          "target": [
+            {
+              "id": "javascript-code-1-input-1",
+              "position": "left",
+              "x": -20,
+              "y": 28,
+              "width": 16,
+              "height": 16
+            }
+          ]
+        },
+        "selected": false,
+        "dragging": false,
+        "resizing": false,
+        "initialized": true,
+        "events": {},
+        "data": {
+          "disableBlock": false,
+          "description": "GitHubの raw JSON を取得してファイルとしてダウンロード",
+          "context": "website",
+          "everyNewTab": false,
+          "timeout": 30000,
+          "preloadScripts": [],
+          "code": "(async function () {\n  function next(data) {\n    automaNextBlock({ data: data });\n  }\n\n  function fail(message) {\n    alert('[Automa Download] ' + message);\n    next('Error: ' + message);\n  }\n\n  if (!location.href.match(/^https:\\/\\/github\\.com\\/[^/]+\\/[^/]+\\/blob\\//)) {\n    fail(\n      'GitHubのファイルページで実行してください。\\n\\n' +\n      '例: https://github.com/kotaoue/helloAutoma/blob/<branch>/workflows/<name>.json'\n    );\n    return;\n  }\n\n  var rawUrl = location.href.replace('/blob/', '/raw/').replace(/[?#].*$/, '');\n  var filename = decodeURIComponent(rawUrl.split('/').pop() || 'workflow.json');\n\n  try {\n    var response = await fetch(rawUrl, { credentials: 'same-origin' });\n    if (!response.ok) {\n      throw new Error('HTTP ' + response.status);\n    }\n\n    var blob = await response.blob();\n    var objectUrl = URL.createObjectURL(blob);\n    var link = document.createElement('a');\n\n    link.href = objectUrl;\n    link.download = filename;\n    document.body.appendChild(link);\n    link.click();\n    link.remove();\n    setTimeout(function () {\n      URL.revokeObjectURL(objectUrl);\n    }, 1000);\n\n    next('Downloaded JSON file: ' + filename);\n  } catch (error) {\n    fail('JSONのダウンロードに失敗しました: ' + error.message);\n  }\n})()"
+        }
+      }
+    ],
+    "zoom": 1
+  }
+}
