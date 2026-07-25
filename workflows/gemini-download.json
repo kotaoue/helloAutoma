@@ -1,6 +1,7 @@
 {
   "id": "gemini-download",
   "name": "Gemini → Markdown Download",
+  "description": "[work freeze] Download Gemini content as a Markdown file.",
   "icon": "riFlowChart",
   "folderId": null,
   "content": null,

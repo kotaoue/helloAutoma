@@ -1,6 +1,7 @@
 {
   "id": "gemini-debug",
   "name": "Gemini Download — Debug",
+  "description": "[work freeze] Diagnostic workflow: shows an alert confirming JS execution works.",
   "icon": "riFlowChart",
   "folderId": null,
   "content": null,
