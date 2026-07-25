@@ -1,0 +1,232 @@
+{
+  "name": "YouTube Playlist to Markdown",
+  "icon": "📋",
+  "description": "実現不可だったので作業凍結。YouTubeプレイリストページを開いた状態で Automa ボタンから手動実行し、プレイリスト名の Markdown ファイルをダウンロードします。",
+  "version": "1.28.4",
+  "globalData": "",
+  "table": [],
+  "settings": {
+    "publicId": "",
+    "blockDelay": 0,
+    "saveLog": true,
+    "debugMode": false,
+    "restartTimes": 3,
+    "notification": true,
+    "execContext": "popup",
+    "reuseLastState": false,
+    "inputAutocomplete": true,
+    "onError": "stop-workflow",
+    "executedBlockOnWeb": false,
+    "insertDefaultColumn": false,
+    "defaultColumnName": "column"
+  },
+  "drawflow": {
+    "edges": [
+      {
+        "id": "vueflow__edge-trigger-1trigger-1-output-1-active-tab-1active-tab-1-input-1",
+        "source": "trigger-1",
+        "target": "active-tab-1",
+        "sourceHandle": "trigger-1-output-1",
+        "targetHandle": "active-tab-1-input-1",
+        "type": "custom",
+        "updatable": true,
+        "selectable": true,
+        "markerEnd": "arrowclosed",
+        "data": {},
+        "events": {}
+      },
+      {
+        "id": "vueflow__edge-active-tab-1active-tab-1-output-1-javascript-code-1javascript-code-1-input-1",
+        "source": "active-tab-1",
+        "target": "javascript-code-1",
+        "sourceHandle": "active-tab-1-output-1",
+        "targetHandle": "javascript-code-1-input-1",
+        "type": "custom",
+        "updatable": true,
+        "selectable": true,
+        "markerEnd": "arrowclosed",
+        "data": {},
+        "events": {}
+      }
+    ],
+    "nodes": [
+      {
+        "id": "trigger-1",
+        "label": "trigger",
+        "type": "BlockBasic",
+        "position": {
+          "x": 96,
+          "y": 200
+        },
+        "computedPosition": {
+          "x": 96,
+          "y": 200,
+          "z": 0
+        },
+        "dimensions": {
+          "width": 192,
+          "height": 72
+        },
+        "handleBounds": {
+          "source": [
+            {
+              "id": "trigger-1-output-1",
+              "position": "right",
+              "x": 196,
+              "y": 28,
+              "width": 16,
+              "height": 16
+            }
+          ]
+        },
+        "selected": false,
+        "dragging": false,
+        "resizing": false,
+        "initialized": true,
+        "events": {},
+        "data": {
+          "disableBlock": false,
+          "description": "Automa ポップアップの ▶ ボタンで手動起動",
+          "type": "manual",
+          "interval": 60,
+          "delay": 5,
+          "date": "",
+          "time": "00:00",
+          "url": "",
+          "shortcut": "",
+          "activeInInput": false,
+          "isUrlRegex": false,
+          "days": [],
+          "contextMenuName": "",
+          "contextTypes": [],
+          "parameters": [],
+          "preferParamsInTab": false,
+          "observeElement": {
+            "selector": "",
+            "baseSelector": "",
+            "matchPattern": "",
+            "targetOptions": {
+              "subtree": false,
+              "childList": true,
+              "attributes": false,
+              "attributeFilter": [],
+              "characterData": false
+            },
+            "baseElOptions": {
+              "subtree": false,
+              "childList": true,
+              "attributes": false,
+              "attributeFilter": [],
+              "characterData": false
+            }
+          }
+        }
+      },
+      {
+        "id": "active-tab-1",
+        "label": "active-tab",
+        "type": "BlockBasic",
+        "position": {
+          "x": 388,
+          "y": 200
+        },
+        "computedPosition": {
+          "x": 388,
+          "y": 200,
+          "z": 0
+        },
+        "dimensions": {
+          "width": 192,
+          "height": 72
+        },
+        "handleBounds": {
+          "source": [
+            {
+              "id": "active-tab-1-output-1",
+              "position": "right",
+              "x": 196,
+              "y": 28,
+              "width": 16,
+              "height": 16
+            }
+          ],
+          "target": [
+            {
+              "id": "active-tab-1-input-1",
+              "position": "left",
+              "x": -20,
+              "y": 28,
+              "width": 16,
+              "height": 16
+            }
+          ]
+        },
+        "selected": false,
+        "dragging": false,
+        "resizing": false,
+        "initialized": true,
+        "events": {},
+        "data": {
+          "disableBlock": false,
+          "description": "現在アクティブなタブ（YouTubeプレイリスト）を取得"
+        }
+      },
+      {
+        "id": "javascript-code-1",
+        "label": "javascript-code",
+        "type": "BlockBasic",
+        "position": {
+          "x": 680,
+          "y": 200
+        },
+        "computedPosition": {
+          "x": 680,
+          "y": 200,
+          "z": 0
+        },
+        "dimensions": {
+          "width": 192,
+          "height": 72
+        },
+        "handleBounds": {
+          "source": [
+            {
+              "id": "javascript-code-1-output-1",
+              "position": "right",
+              "x": 196,
+              "y": 28,
+              "width": 16,
+              "height": 16
+            }
+          ],
+          "target": [
+            {
+              "id": "javascript-code-1-input-1",
+              "position": "left",
+              "x": -20,
+              "y": 28,
+              "width": 16,
+              "height": 16
+            }
+          ]
+        },
+        "selected": false,
+        "dragging": false,
+        "resizing": false,
+        "initialized": true,
+        "events": {},
+        "data": {
+          "disableBlock": false,
+          "description": "全動画をスクロールで読み込み、Markdown ファイルとしてダウンロードする",
+          "context": "website",
+          "code": "(async () => {\n  const INITIAL_PAGE_LOAD_DELAY = 500;   // ms: short delay since page is already loaded for manual trigger\n  const SCROLL_DELAY = 1500;             // ms: wait after each scroll step\n  const MAX_SCROLL_ITERATIONS = 100;     // safety cap for very large playlists\n  const MAX_SCROLL_DURATION_MS = 120000; // 2-minute wall-clock timeout\n\n  console.log('[Automa] Started. URL:', window.location.href);\n\n  if (!window.location.href.includes('/playlist?')) {\n    console.warn('[Automa] Not a playlist page:', window.location.href);\n    automaNextBlock({ message: 'Error: Not a playlist page. URL: ' + window.location.href });\n    return;\n  }\n\n  await new Promise(r => setTimeout(r, INITIAL_PAGE_LOAD_DELAY));\n\n  // Scroll until no new items load or the time limit is reached.\n  // Do NOT break early when count is still 0 - items may still be rendering.\n  let prevCount = 0;\n  const scrollStart = Date.now();\n  for (let i = 0; i < MAX_SCROLL_ITERATIONS; i++) {\n    if (Date.now() - scrollStart > MAX_SCROLL_DURATION_MS) {\n      console.warn('[Automa] Scroll timeout reached at iteration', i);\n      break;\n    }\n    const items = document.querySelectorAll('ytd-playlist-video-renderer');\n    console.log('[Automa] Scroll iteration', i, '- items found:', items.length);\n    if (items.length > 0 && items.length === prevCount) break;\n    prevCount = items.length;\n    window.scrollTo(0, document.documentElement.scrollHeight);\n    await new Promise(r => setTimeout(r, SCROLL_DELAY));\n  }\n\n  window.scrollTo(0, 0);\n\n  // Try multiple selectors for the playlist title (YouTube occasionally updates the DOM)\n  const titleEl = document.querySelector(\n    'h1.ytd-playlist-header-renderer yt-formatted-string, ' +\n    'ytd-playlist-header-renderer h1, ' +\n    'yt-formatted-string#title, ' +\n    '#title.ytd-playlist-header-renderer'\n  );\n  const rawTitle = titleEl ? titleEl.textContent.trim() : '';\n  console.log('[Automa] Raw title element:', titleEl ? titleEl.tagName : 'not found', '/ text:', rawTitle);\n  const playlistTitle = (rawTitle || 'playlist').replace(/[\\/:\\*\\?\"<>|]/g, '_');\n  console.log('[Automa] Sanitized title:', playlistTitle);\n\n  const videoItems = document.querySelectorAll('ytd-playlist-video-renderer');\n  console.log('[Automa] Total video items found:', videoItems.length);\n  const lines = [];\n\n  videoItems.forEach(item => {\n    const linkEl = item.querySelector('a#video-title');\n    if (linkEl) {\n      const title = linkEl.textContent.trim();\n      const href = linkEl.getAttribute('href');\n      if (title && href) {\n        lines.push('- [' + title + '](https://www.youtube.com' + href + ')');\n      }\n    }\n  });\n\n  console.log('[Automa] Lines extracted:', lines.length);\n\n  if (lines.length === 0) {\n    console.warn('[Automa] No videos found. ytd-playlist-video-renderer selectors may have changed.');\n    automaNextBlock({ message: 'No videos found. Open DevTools (F12) and check the [Automa] console logs.' });\n    return;\n  }\n\n  const markdown = lines.join('\\n') + '\\n';\n\n  // Use data: URI for reliable download across all execution contexts\n  const dataUri = 'data:text/plain;charset=utf-8,' + encodeURIComponent(markdown);\n  const a = document.createElement('a');\n  a.setAttribute('href', dataUri);\n  a.setAttribute('download', playlistTitle + '.md');\n  a.style.display = 'none';\n  document.body.appendChild(a);\n  a.click();\n  document.body.removeChild(a);\n\n  console.log('[Automa] Done:', playlistTitle + '.md (' + lines.length + ' videos)');\n  automaNextBlock({ message: 'Downloaded: ' + playlistTitle + '.md (' + lines.length + ' videos)' });\n})()",
+          "everyNewTab": false,
+          "preloadScripts": [],
+          "runBeforeLoad": false,
+          "timeout": 300000
+        }
+      }
+    ],
+    "zoom": 1
+  }
+}
