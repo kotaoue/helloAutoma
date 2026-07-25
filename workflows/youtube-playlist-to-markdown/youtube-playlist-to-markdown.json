@@ -1,7 +1,7 @@
 {
   "name": "YouTube Playlist to Markdown",
   "icon": "📋",
-  "description": "YouTubeプレイリストページを開いた状態で Automa ボタンから手動実行し、プレイリスト名の Markdown ファイルをダウンロードします。",
+  "description": "実現不可だったので作業凍結。YouTubeプレイリストページを開いた状態で Automa ボタンから手動実行し、プレイリスト名の Markdown ファイルをダウンロードします。",
   "version": "1.28.4",
   "globalData": "",
   "table": [],
